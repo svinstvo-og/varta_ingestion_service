@@ -3,6 +3,6 @@ spring:
     name: "ingestion_service"
 
   datasource:
-    url: "jdbc:postgresql://localhost:5432/varta"
+    url: "jdbc:postgresql://localhost:5432/kaggle-6M-dataset"
     username: "postgres"
     password: "zxca"

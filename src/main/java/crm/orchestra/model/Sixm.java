@@ -12,17 +12,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionRaw6m {
+public class Sixm {
     @Id
     private Integer id;
     private int step;
     private long amount;
     private String nameOrig;
-    private long oldbalanceOrg;
-    private long newbalanceOrig;
+    private long oldBalanceOrg;
+    private long newBalanceOrig;
     private String nameDest;
-    private long oldbalanceDest;
-    private long newbalanceDest;
+    private long oldBalanceDest;
+    private long newBalanceDest;
     private boolean isFraud;
     private boolean isFlaggedFraud;
 }
