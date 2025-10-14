@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: "ingestion_service"
+
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/varta"
+    username: "postgres"
+    password: "zxca"
