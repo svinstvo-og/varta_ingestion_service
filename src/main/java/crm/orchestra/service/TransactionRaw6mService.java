@@ -19,4 +19,7 @@ public class TransactionRaw6mService {
         return transactionRaw6mRepository.findById(id);
     }
 
+    public void normalize(Sixm sixm) {
+
+    }
 }

@@ -16,7 +16,7 @@ public class Sixm {
     @Id
     private Integer id;
     private int step;
-    private long amount;
+    private double amount;
     private String nameOrig;
     private long oldBalanceOrg;
     private long newBalanceOrig;
