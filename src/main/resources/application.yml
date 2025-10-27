@@ -6,3 +6,8 @@ spring:
     url: "jdbc:postgresql://localhost:5432/ingestion-service-db"
     username: "postgres"
     password: "zxca"
+
+  data:
+    jpa:
+      hibernate:
+        ddl-auto: create
