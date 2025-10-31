@@ -1,7 +1,7 @@
-package crm.orchestra.controller;
+package varta.controller;
 
-import crm.orchestra.model.Sixm;
-import crm.orchestra.service.TransactionRaw6mService;
+import varta.model.pgsql.Sixm;
+import varta.service.TransactionRaw6mService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

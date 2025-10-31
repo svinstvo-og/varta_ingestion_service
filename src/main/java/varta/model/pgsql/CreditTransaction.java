@@ -1,4 +1,4 @@
-package crm.orchestra.model;
+package varta.model.pgsql;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

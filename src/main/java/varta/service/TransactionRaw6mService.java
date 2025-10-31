@@ -1,7 +1,7 @@
-package crm.orchestra.service;
+package varta.service;
 
-import crm.orchestra.model.Sixm;
-import crm.orchestra.repository.TransactionRaw6mRepository;
+import varta.model.pgsql.Sixm;
+import varta.repository.pgsql.TransactionRaw6mRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

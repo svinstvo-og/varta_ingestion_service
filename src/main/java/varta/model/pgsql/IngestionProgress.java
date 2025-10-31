@@ -1,9 +1,8 @@
-package crm.orchestra.model;
+package varta.model.pgsql;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.context.annotation.Primary;
 
 @Entity
 @Builder

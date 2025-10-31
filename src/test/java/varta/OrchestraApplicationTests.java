@@ -1,4 +1,4 @@
-package crm.orchestra;
+package varta;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package crm.orchestra.dto;
+package varta.dto;
 
 public enum Status {
     FAILED,

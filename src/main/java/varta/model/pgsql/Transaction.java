@@ -1,11 +1,9 @@
-package crm.orchestra.model;
+package varta.model.pgsql;
 
-import crm.orchestra.dto.TransactionType;
+import varta.dto.TransactionType;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.hibernate.type.descriptor.jdbc.TimestampWithTimeZoneJdbcType;
 

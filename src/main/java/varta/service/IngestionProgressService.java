@@ -1,7 +1,7 @@
-package crm.orchestra.service;
+package varta.service;
 
-import crm.orchestra.model.IngestionProgress;
-import crm.orchestra.repository.IngestionProgressRepository;
+import varta.model.pgsql.IngestionProgress;
+import varta.repository.pgsql.IngestionProgressRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
