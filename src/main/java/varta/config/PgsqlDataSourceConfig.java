@@ -1,0 +1,58 @@
+package varta.config;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import   org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        basePackages = "varta.repository.pgsql",
+        entityManagerFactoryRef = "pgsqlEntityManagerFactory",
+        transactionManagerRef = "pgsqlTransactionManager"
+)
+public class PgsqlDataSourceConfig {
+
+    @Primary
+    @Bean(name = "pgsqlDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.pgsql")
+    public DataSource pgsqlDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Primary
+    @Bean(name = "pgsqlEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean pgsqlEntityManagerFactory(
+            EntityManagerFactoryBuilder builder,
+            @Qualifier("pgsqlDataSource") DataSource dataSource) {
+
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+
+        return builder
+                .dataSource(dataSource)
+                .packages("varta.model.pgsql")
+                .persistenceUnit("pgsql")
+                .properties(properties)
+                .build();
+    }
+
+    @Primary
+    @Bean(name = "pgsqlTransactionManager")
+    public PlatformTransactionManager pgsqlTransactionManager(
+            @Qualifier("pgsqlEntityManagerFactory") LocalContainerEntityManagerFactoryBean pgsqlEntityManagerFactory) {
+        return new JpaTransactionManager(pgsqlEntityManagerFactory.getObject());
+    }
+}
