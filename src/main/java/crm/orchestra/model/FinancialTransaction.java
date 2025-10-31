@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Table(name = "financial_transaction")
 public class FinancialTransaction {
     @Id
-    private Long id;
+    private Long Id;
 
     @Column(name = "F1")
-    private String transactionUniqueId;
+    private String transactionUniqueId; //Todo FK
 
     @Column(name = "F2")
     private String cardIdentifier;

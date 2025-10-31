@@ -2,12 +2,35 @@ spring:
   application:
     name: "ingestion_service"
 
-  datasource:
-    url: "jdbc:postgresql://localhost:5432/ingestion-service-db"
-    username: "postgres"
-    password: "zxca"
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
-  data:
-    jpa:
-      hibernate:
-        ddl-auto: create
+  datasource:
+    # pgsql datasource
+    pgsql:
+      url: "jdbc:postgresql://localhost:5432/ingestion-service-db"
+      username: "postgres"
+      password: "zxca"
+      driver-class-name: "org.postgresql.Driver"
+
+      hikari:
+        pool-name: "pgsql-hikari-pool"
+        maximum-pool-size: 20
+
+      # Mysql datasource
+      mysql:
+        url: "jdbc:mysql://localhost:3307/sf_web_001"
+        username: root
+        password: root
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+      jpa:
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+          ddl-auto: update
+        show-sql: true
