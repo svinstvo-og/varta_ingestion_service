@@ -20,13 +20,6 @@ spring:
         pool-name: "pgsql-hikari-pool"
         maximum-pool-size: 20
 
-      # Mysql datasource
-      mysql:
-        url: "jdbc:mysql://localhost:3307/sf_web_001"
-        username: root
-        password: root
-        driver-class-name: com.mysql.cj.jdbc.Driver
-
       jpa:
         properties:
           hibernate:
@@ -34,3 +27,10 @@ spring:
         hibernate:
           ddl-auto: update
         show-sql: true
+
+    # Mysql datasource
+    mysql:
+      url: "jdbc:mysql://localhost:3307/sf_web_001"
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver

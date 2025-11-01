@@ -1,6 +1,7 @@
 package varta.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import   org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -26,10 +27,16 @@ import java.util.HashMap;
 public class PgsqlDataSourceConfig {
 
     @Primary
-    @Bean(name = "pgsqlDataSource")
+    @Bean(name = "pgsqlProperties")
     @ConfigurationProperties(prefix = "spring.datasource.pgsql")
-    public DataSource pgsqlDataSource() {
-        return DataSourceBuilder.create().build();
+    public DataSourceProperties pgsqlProperties() {
+        return new DataSourceProperties();
+    }
+
+    @Primary
+    @Bean(name = "pgsqlDataSource")
+    public DataSource pgsqlDataSource(@Qualifier("pgsqlProperties") DataSourceProperties properties) {
+        return properties.initializeDataSourceBuilder().build();
     }
 
     @Primary

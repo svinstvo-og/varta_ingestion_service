@@ -1,6 +1,7 @@
 package varta.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
@@ -24,10 +25,15 @@ import java.util.HashMap;
 )
 public class MysqlDataSourceConfig {
 
-    @Bean(name = "mysqlDataSource")
+    @Bean(name = "mysqlProperties")
     @ConfigurationProperties(prefix = "spring.datasource.mysql")
-    public DataSource mysqlDataSource() {
-        return DataSourceBuilder.create().build();
+    public DataSourceProperties mysqlProperties() {
+        return new DataSourceProperties();
+    }
+
+    @Bean(name = "mysqlDataSource")
+    public DataSource mysqlDataSource(@Qualifier("mysqlProperties") DataSourceProperties properties) {
+        return properties.initializeDataSourceBuilder().build();
     }
 
     @Bean(name = "mysqlEntityManagerFactory")
@@ -35,10 +41,9 @@ public class MysqlDataSourceConfig {
             EntityManagerFactoryBuilder builder,
             @Qualifier("mysqlDataSource") DataSource dataSource) {
 
-        // Optional: If you need to set specific properties for this dialect
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        properties.put("hibernate.hbm2ddl.auto", "none"); // IMPORTANT: Don't let it modify the source DB
+        properties.put("hibernate.hbm2ddl.auto", "none");
 
         return builder
                 .dataSource(dataSource)
