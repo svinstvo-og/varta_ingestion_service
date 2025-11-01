@@ -1,6 +1,8 @@
 package varta.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import varta.model.pgsql.Sixm;
+import varta.service.NormalizationService;
 import varta.service.TransactionRaw6mService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +18,14 @@ import java.util.Optional;
 public class IngestionController {
 
     final
+    NormalizationService normalizationService;
+
+    final
     TransactionRaw6mService transactionRaw6mService;
 
-    public IngestionController(TransactionRaw6mService transactionRaw6mService) {
+    public IngestionController(TransactionRaw6mService transactionRaw6mService, NormalizationService normalizationService) {
         this.transactionRaw6mService = transactionRaw6mService;
+        this.normalizationService = normalizationService;
     }
 
     @GetMapping({"/test/datasets/6m/{id}"})
@@ -34,5 +40,11 @@ public class IngestionController {
             log.warn("Transaction not found: {}", id);
             return null;
         }
+    }
+
+    @GetMapping("/test/financial_transaction/{id}")
+    public void fetchRawTransaction(@PathVariable Long id) {
+        log.info("Accepted 'Get raw transaction by {} id' request", id);
+        normalizationService.testRawTransactionRead(id);
     }
 }
