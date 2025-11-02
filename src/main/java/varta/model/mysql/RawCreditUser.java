@@ -1,4 +1,4 @@
-package varta.model;
+package varta.model.mysql;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
