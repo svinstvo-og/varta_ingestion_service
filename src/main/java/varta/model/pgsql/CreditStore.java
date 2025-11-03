@@ -1,15 +1,17 @@
 package varta.model.pgsql;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "credit_store")
 public class CreditStore {
     @Id
     private Long id;
+
+    @OneToMany(mappedBy = "credit_store")
+    private List<FinancialTransaction> financialTransactions;
 
     private String industry;
 

@@ -29,24 +29,29 @@ public class RawFinancialTransaction {
     @Column(name = "F2")
     private String cardIdentifier;
 
+    // An 8-digit code categorizing the transaction. Identical to F4. Not sure if I rly need this
     @Column(name = "F3")
     private String transactionCode;
 
     @Column(name = "F4")
     private String transactionCodeDup;
 
+    // A 12-digit number, likely a tokenized or hashed representation of the card's Primary Account Number (PAN).
     @Column(name = "F5")
     private String cardPanReference;
 
     @Column(name = "F6")
     private String authorizationCode;
 
+    // Always(?) 00, which is approved
     @Column(name = "F7")
     private String transactionStatusCode;
 
+    // A code for the transaction type. The value is consistently 01, likely indicating 'Purchase'.
     @Column(name = "F8")
     private String transactionTypeCode;
 
+    // A flag indicating card presence. The value is 01, likely for 'Card Present'.
     @Column(name = "F9")
     private String cardPresenceFlag;
 
@@ -65,6 +70,7 @@ public class RawFinancialTransaction {
     @Column(name = "F14")
     private String processingDate;
 
+    // A 3-digit code likely indicating how the card was entered (e.g., swiped, inserted, contactless).
     @Column(name = "F15")
     private String terminalEntryMode;
 
