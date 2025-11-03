@@ -52,4 +52,10 @@ public class CreditCard {
 
     @OneToMany(mappedBy = "credit_card")
     private List<FinancialTransaction> financialTransactions;
+
+    @OneToMany(mappedBy = "credit_card")
+    private List<CreditTransaction> creditTransactionsOutgoing;
+
+    @OneToMany(mappedBy = "credit_card")
+    private List<CreditTransaction> creditTransactionsIncoming;
 }

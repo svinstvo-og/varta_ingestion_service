@@ -1,11 +1,10 @@
 package varta.model.pgsql;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "credit_trans")
@@ -13,125 +12,64 @@ public class CreditTransaction {
     @Id
     private Long id;
 
-    @Column(name = "T1")
-    private String sourceCardIdentifier;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditCard sourceCardId;
 
-    @Column(name = "T2")
-    private String transactionChannelCode;
+    // Code for the transaction channel. 01 for purchases, 03 for transfers.
+    private Integer transactionChannelCode;
 
-    @Column(name = "T3")
+    // IDK
     private String transactionCode;
+    private String transactionPan;
 
-    @Column(name = "T4")
-    private String transactionPanReference;
-
-    @Column(name = "T5")
-    private String reservedField1;
-
-    @Column(name = "T6")
-    private Integer errorFlag;
-
-    @Column(name = "T7")
-    private String transactionTypeCode;
-
-    @Column(name = "T8")
-    private Integer completionFlag;
-
-    @Column(name = "T9")
-    private String authorizationCode;
-
-    @Column(name = "T10")
-    private String transactionTimestampLocal;
-
-    @Column(name = "T11")
-    private Integer partialAuthFlag;
-
-    @Column(name = "T12")
+    // An 8-digit system trace or audit number.
     private String systemTraceId;
 
-    @Column(name = "T13")
-    private String transactionCodeDup1;
-
-    @Column(name = "T14")
-    private String processingCode;
-
-    @Column(name = "T15")
+    // TODO: Do some digging
     private String networkCode;
 
-    @Column(name = "T16")
-    private Integer reversalFlag;
-
-    @Column(name = "T17")
     private BigDecimal transactionAmount;
 
-    @Column(name = "T18")
-    private String transactionStatusCode;
-
-    @Column(name = "T19")
-    private String transactionTimeShort;
-
-    @Column(name = "T20")
-    private String transactionCodeDup2;
-
-    @Column(name = "T21")
-    private String errorCode;
-
-    @Column(name = "T22", columnDefinition = "TEXT")
+    // TODO: find out tf this is
     private String transactionCompositeKey;
 
-    @Column(name = "T23")
-    private String transactionDate;
+    private LocalDateTime proccessedAt;
 
-    @Column(name = "T24")
-    private String transactionCodeDup3;
+    @Nullable
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditStore merchantAcquirerId;
 
-    @Column(name = "T25")
-    private String merchantAcquirerId;
-
-    @Column(name = "T26")
+    // TODO: not yet sure what is that either
     private String responseCode;
 
-    @Column(name = "T27")
-    private String transactionMode;
+    // A code for the transaction entry mode (e.g., 01 for keyed, 07 for contactless).
+    private Integer entryMode;
 
-    @Column(name = "T28")
-    private String entryMode;
+    // The 4-digit MCC. Is 0000 for transfers.
+    private Integer merchantCategoryCode;
 
-    @Column(name = "T29")
-    private String reservedField2;
-
-    @Column(name = "T30")
-    private String merchantCategoryCode;
-
-    @Column(name = "T31")
-    private String merchantInternalId;
-
-    @Column(name = "T32")
     private String transactionDescription;
 
-    @Column(name = "T33")
-    private String terminalTypeCode;
+    // Those two are sussy aswell, do some digging
+    private Integer terminalTypeCode;
+    private Integer terminalId;
 
-    @Column(name = "T34")
-    private String terminalIdShort;
-
-    @Column(name = "T35")
+    //A code indicating the card product. Not sure what exactly that means
     private String cardProductIndicator;
 
-    @Column(name = "T36")
+    // A code indicating who initiated the transaction (e.g., cardholder, merchant).
     private String transactionInitiator;
 
-    @Column(name = "T37")
-    private String destinationCardIdentifier;
+    @Nullable
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditCard destinationCardId;
 
-    @Column(name = "T38")
-    private Integer routingFlag;
-
-    @Column(name = "T39")
+    // A flag, consistently 1 or 0, possibly indicating if authentication (e.g., PIN) was performed.
     private Integer authenticationFlag;
 
     private Integer abnormal;
 
+    // TODO: change to enum
     @Column(name = "abnormal_state", columnDefinition = "JSONB")
     private String abnormalState;
 }

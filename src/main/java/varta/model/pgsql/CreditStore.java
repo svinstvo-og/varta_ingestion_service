@@ -13,6 +13,9 @@ public class CreditStore {
     @OneToMany(mappedBy = "credit_store")
     private List<FinancialTransaction> financialTransactions;
 
+    @OneToMany(mappedBy = "credit_store")
+    private List<CreditTransaction> creditTransactions;
+
     private String industry;
 
     @Column(name = "name_")
