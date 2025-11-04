@@ -1,6 +1,8 @@
 package varta.model.pgsql;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import varta.dto.AbnormalState;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +11,9 @@ import java.util.List;
 @Table(name = "credit_store")
 public class CreditStore {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long storeInternalId;
+    private String storeExternalId;
 
     private String industry;
     private String name;
@@ -44,9 +48,8 @@ public class CreditStore {
 
     private Boolean abnormal;
 
-    // TODO: make an enum
-    @Column(name = "abnormal_state", columnDefinition = "JSONB")
-    private String abnormalState;
+    @Nullable
+    private AbnormalState abnormalState;
 
     @OneToMany(mappedBy = "credit_store")
     private List<FinancialTransaction> financialTransactions;

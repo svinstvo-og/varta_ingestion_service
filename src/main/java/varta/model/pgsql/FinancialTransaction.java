@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "financial_transaction")
 public class FinancialTransaction {
-    // TODO: rule out fraud flag
-
     @Id
-    private String transactionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long transactionExternalId;
+    private String transactionInternalId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CreditCard cardId;

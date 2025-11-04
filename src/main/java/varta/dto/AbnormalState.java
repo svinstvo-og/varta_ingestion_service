@@ -1,0 +1,10 @@
+package varta.dto;
+
+public enum AbnormalState {
+    ABNORMAL_TRANSFER,
+    CREDIT_CARD_FRAUD,
+    FAKE_REGISTRATION,
+    SCALPER_MARKETING,
+    GAMBLING_VIOLATION,
+    MERCHANT_VIOLATION
+}

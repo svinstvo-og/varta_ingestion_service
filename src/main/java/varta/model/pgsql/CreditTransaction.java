@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import varta.dto.AbnormalState;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +19,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreditTransaction {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long transactionInternalId;
+    private String transactionExternalId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CreditCard sourceCardId;
@@ -48,7 +51,7 @@ public class CreditTransaction {
     private CreditStore merchantAcquirerId;
 
     // TODO: not yet sure what is that either
-    private String responseCode;
+    private Integer responseCode;
 
     // A code for the transaction entry mode (e.g., 01 for keyed, 07 for contactless).
     private Integer entryMode;
@@ -62,7 +65,7 @@ public class CreditTransaction {
     private Integer terminalTypeCode;
     private Integer terminalId;
 
-    //A code indicating the card product. Not sure what exactly that means
+    // A code indicating the card product. Not sure what exactly that means
     private String cardProductIndicator;
 
     // A code indicating who initiated the transaction (e.g., cardholder, merchant).
@@ -76,8 +79,5 @@ public class CreditTransaction {
     private Integer authenticationFlag;
 
     private Integer abnormal;
-
-    // TODO: change to enum
-    @Column(name = "abnormal_state", columnDefinition = "JSONB")
-    private String abnormalState;
+    private AbnormalState abnormalState;
 }

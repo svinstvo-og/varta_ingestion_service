@@ -3,6 +3,7 @@ package varta.model.pgsql;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import varta.dto.AbnormalState;
 
 import java.util.List;
 
@@ -12,14 +13,12 @@ import java.util.List;
 @Setter
 public class CreditCard {
 
-    // TODO: make an enum
-    private String ownerType;
-
-    @Column(name = "owner_id")
-    private Long ownerId;
-
     @Id
-    private String cardId;
+    private Long internalCardId;
+    private String externalCardId;
+
+    // Otherwise is user
+    private Boolean isMerchant;
 
     // A code for the card type. 02 is correlated with fraud flags. Not so sure
     private String cardType;
@@ -45,9 +44,7 @@ public class CreditCard {
 
     private Integer abnormal;
 
-    // TODO: make an enum
-    @Column(name = "abnormal_state", columnDefinition = "JSONB")
-    private String abnormalState;
+    private AbnormalState abnormalState;
 
     @OneToMany(mappedBy = "credit_card")
     private List<FinancialTransaction> financialTransactions;
