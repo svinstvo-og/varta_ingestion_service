@@ -11,42 +11,41 @@ import java.util.List;
 @Getter
 @Setter
 public class CreditCard {
-    @Id
-    @Column(name = "card_id")
-    private Long cardId;
 
-    @Column(name = "owner_type")
+    // TODO: make an enum
     private String ownerType;
 
     @Column(name = "owner_id")
     private Long ownerId;
 
-    @Column(name = "C4")
-    private String cardIdentifier;
+    @Id
+    private String cardId;
 
-    @Column(name = "C5")
+    // A code for the card type. 02 is correlated with fraud flags. Not so sure
     private String cardType;
 
-    @Column(name = "C6")
+    // A code identifying the specific card product (e.g., standard, premium)
     private String cardProductCode;
 
-    @Column(name = "C7")
+    // An optional, user-defined name for the card.
     private String cardNickname;
 
-    @Column(name = "C8")
+    //A flag for a specific card feature. Often null (--). Do some research here as well
     private String cardFeatureFlag;
 
-    @Column(name = "C9")
+    // Foreign key linking to credit_user.loc_id.
+    // TODO: wtf
     private String locationId;
 
-    @Column(name = "C10")
+    // A sub-code for the location, likely a specific branch.
     private String branchCode;
 
-    @Column(name = "C11")
+    // A concatenation of C9 and C10.
     private String fullLocationCode;
 
     private Integer abnormal;
 
+    // TODO: make an enum
     @Column(name = "abnormal_state", columnDefinition = "JSONB")
     private String abnormalState;
 
