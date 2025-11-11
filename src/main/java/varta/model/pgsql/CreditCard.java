@@ -46,6 +46,10 @@ public class CreditCard {
 
     private AbnormalState abnormalState;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "credit_user_id")
+    private CreditUser creditUser;
+
     @OneToMany(mappedBy = "credit_card")
     private List<FinancialTransaction> financialTransactions;
 

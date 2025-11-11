@@ -26,7 +26,7 @@ public class CreditUser {
     private String job;
     private Integer wage;
 
-    @OneToMany(mappedBy = "credit_user")
+    @OneToMany(mappedBy = "creditUser")
     private List<CreditCard> cards;
 
     private Boolean abnormal;
