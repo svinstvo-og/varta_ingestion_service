@@ -51,9 +51,9 @@ public class CreditStore {
     @Nullable
     private AbnormalState abnormalState;
 
-    @OneToMany(mappedBy = "credit_store")
+    @OneToMany(mappedBy = "merchantAcquirerId")
     private List<FinancialTransaction> financialTransactions;
 
-    @OneToMany(mappedBy = "credit_store")
+    @OneToMany(mappedBy = "merchantAcquirerId")
     private List<CreditTransaction> creditTransactions;
 }

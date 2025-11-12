@@ -23,9 +23,6 @@ public class CreditTransaction {
     private Long transactionInternalId;
     private String transactionExternalId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CreditCard sourceCardId;
-
     // Code for the transaction channel. 01 for purchases, 03 for transfers.
     private Integer transactionChannelCode;
 
@@ -45,10 +42,6 @@ public class CreditTransaction {
     private String transactionCompositeKey;
 
     private LocalDateTime proccessedAt;
-
-    @Nullable
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CreditStore merchantAcquirerId;
 
     // TODO: not yet sure what is that either
     private Integer responseCode;
@@ -71,13 +64,22 @@ public class CreditTransaction {
     // A code indicating who initiated the transaction (e.g., cardholder, merchant).
     private String transactionInitiator;
 
-    @Nullable
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CreditCard destinationCardId;
-
     // A flag, consistently 1 or 0, possibly indicating if authentication (e.g., PIN) was performed.
     private Integer authenticationFlag;
 
     private Integer abnormal;
     private AbnormalState abnormalState;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditCard sourceCardId;
+
+    @Nullable
+    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "destination_card_id")
+    private CreditCard destinationCardId;
+
+    @Nullable
+    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "destination_card_id")
+    private CreditStore merchantAcquirerId;
 }

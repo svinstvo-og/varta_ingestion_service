@@ -50,12 +50,12 @@ public class CreditCard {
     @JoinColumn(name = "credit_user_id")
     private CreditUser creditUser;
 
-    @OneToMany(mappedBy = "credit_card")
+    @OneToMany(mappedBy = "transactionInternalId")
     private List<FinancialTransaction> financialTransactions;
 
-    @OneToMany(mappedBy = "credit_card")
+    @OneToMany(mappedBy = "sourceCardId")
     private List<CreditTransaction> creditTransactionsOutgoing;
 
-    @OneToMany(mappedBy = "credit_card")
+    @OneToMany(mappedBy = "destinationCardId")
     private List<CreditTransaction> creditTransactionsIncoming;
 }

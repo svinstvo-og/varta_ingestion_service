@@ -1,5 +1,6 @@
 package varta.model.pgsql;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +18,6 @@ public class FinancialTransaction {
     private Long transactionExternalId;
     private String transactionInternalId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CreditCard cardId;
     private Integer transactionCategory;
     private Integer CardPanReference;
     private Integer CardEntryMode;
@@ -27,12 +26,16 @@ public class FinancialTransaction {
     private Integer currencyCode;
     private LocalDateTime transactionProccessedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CreditStore merchantAcquirerId;
-
     // Not sure
     private String acquirerCountryCode;
     private String responseCode;
 
     private BigDecimal feeAmount;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditCard cardId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditStore merchantAcquirerId;
 }

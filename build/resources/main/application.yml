@@ -1,6 +1,6 @@
 spring:
   application:
-    name: "ingestion_service"
+    name: "varta-ingestion-svc"
 
 #  autoconfigure:
 #    exclude:
@@ -34,3 +34,9 @@ spring:
       username: root
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
