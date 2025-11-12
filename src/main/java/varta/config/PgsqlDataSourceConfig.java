@@ -1,6 +1,7 @@
 package varta.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -33,7 +34,13 @@ public class PgsqlDataSourceConfig {
         return new DataSourceProperties();
     }
 
+    @Bean(name = "dataSource")
+    public DataSource dataSource(@Qualifier("pgsqlDataSource") DataSource pgsqlDataSource) {
+        return pgsqlDataSource;
+    }
+
     @Primary
+    @BatchDataSource
     @Bean(name = "pgsqlDataSource")
     public DataSource pgsqlDataSource(@Qualifier("pgsqlProperties") DataSourceProperties properties) {
         return properties.initializeDataSourceBuilder().build();
@@ -54,6 +61,11 @@ public class PgsqlDataSourceConfig {
                 .persistenceUnit("pgsql")
                 .properties(properties)
                 .build();
+    }
+
+    @Bean(name = "transactionManager")
+    public PlatformTransactionManager transactionManager(@Qualifier("pgsqlTransactionManager") PlatformTransactionManager transactionManager) {
+        return transactionManager;
     }
 
     @Primary
