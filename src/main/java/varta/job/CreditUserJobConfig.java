@@ -1,5 +1,7 @@
 package varta.job;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -24,8 +26,11 @@ import varta.model.pgsql.CreditUser;
 
 import javax.sql.DataSource;
 
+// Layer 0
+
 @Configuration
 @EnableBatchProcessing
+@Slf4j
 public class CreditUserJobConfig {
 
     @Bean
@@ -39,10 +44,17 @@ public class CreditUserJobConfig {
                 .build();
     }
 
-    //TODO
     @Bean
     public ItemProcessor<RawCreditUser, CreditUser> creditUserProcessor() {
-        return null;
+        return raw -> {
+            try {
+                log.info("New credit user: {}", raw.getUserNo());
+                return new CreditUser(raw);
+            } catch (JsonProcessingException e) {
+                log.warn("Failed to process user with external id {}. Reason: {}", raw.getUserNo(), e.getMessage());
+                return null;
+            }
+        };
     }
 
     @Bean
