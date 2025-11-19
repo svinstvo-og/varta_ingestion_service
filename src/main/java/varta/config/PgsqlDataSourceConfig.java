@@ -53,6 +53,7 @@ public class PgsqlDataSourceConfig {
             @Qualifier("pgsqlDataSource") DataSource dataSource) {
 
         HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", "update");
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
         return builder

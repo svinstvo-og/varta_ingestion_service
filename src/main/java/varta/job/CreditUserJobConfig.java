@@ -39,7 +39,9 @@ public class CreditUserJobConfig {
         return new JdbcCursorItemReaderBuilder<RawCreditUser>()
                 .name("mysqlReader")
                 .dataSource(dataSource)
-                .sql("SELECT id, id FROM credit_user")
+                .sql("SELECT id, age, gender, job, wage, card, abnormal, abnormal_state, user_no, loc_id FROM credit_user")
+                .rowMapper(new BeanPropertyRowMapper<>(RawCreditUser.class))
+                .fetchSize(10) //TODO change to 1-3k, 10 is for testing
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditUser.class))
                 .build();
     }
@@ -63,7 +65,10 @@ public class CreditUserJobConfig {
 
         return new JdbcBatchItemWriterBuilder<CreditUser>()
                 .dataSource(dataSource)
-                .sql("INSERT INTO credit_user (id, processed_info) VALUES (:id, :processedInfo)")
+                .sql("INSERT INTO credit_user " +
+                        "(abnormal, abnormal_state, age, external_user_id, gender, job, loc_id, wage) " +
+                        "VALUES " +
+                        "(:abnormal, :abnormalState, :age, :externalUserId, :gender, :job, :locId, :wage)")
                 .beanMapped()
                 .build();
     }
@@ -85,11 +90,11 @@ public class CreditUserJobConfig {
     }
 
     @Bean
-    public Job myEtlJob(
+    public Job creditUserJob(
             JobRepository jobRepository,
             Step readProcessWriteStep) {
 
-        return new JobBuilder("myEtlJob", jobRepository)
+        return new JobBuilder("creditUserJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(readProcessWriteStep)
                 .build();
