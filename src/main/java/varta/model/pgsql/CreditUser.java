@@ -57,10 +57,30 @@ public class CreditUser {
         for (int i=0; i<abnormalMap.size(); i++) {
              if (values.get(i) == 1) {
                 this.abnormalState = Arrays.stream(AbnormalState.values()).toList().get(i);
-                 //TEST ONLY
-                 log.info("Raw JSON abnormal state for user {} is: {}", raw.getUserNo(), this.getAbnormalState());
                 break;
              }
         }
+    }
+
+
+    public Integer getAbnormalStateId() {
+        if (abnormalState == null) return null;
+
+        return abnormalState.ordinal();
+    }
+
+    @Override
+    public String toString() {
+        return "CreditUser{" +
+                "internalUserId=" + internalUserId +
+                ", externalUserId='" + externalUserId + '\'' +
+                ", age=" + age +
+                ", gender=" + gender +
+                ", job='" + job + '\'' +
+                ", wage=" + wage +
+                ", abnormal=" + abnormal +
+                ", abnormalState=" + abnormalState +
+                ", locId='" + locId + '\'' +
+                '}';
     }
 }

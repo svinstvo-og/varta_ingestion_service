@@ -41,7 +41,7 @@ public class CreditUserJobConfig {
                 .dataSource(dataSource)
                 .sql("SELECT id, age, gender, job, wage, card, abnormal, abnormal_state, user_no, loc_id FROM credit_user")
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditUser.class))
-                .fetchSize(10) //TODO change to 1-3k, 10 is for testing
+                .fetchSize(1000)
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditUser.class))
                 .build();
     }
@@ -51,7 +51,9 @@ public class CreditUserJobConfig {
         return raw -> {
             try {
                 log.info("New credit user: {}", raw.getUserNo());
-                return new CreditUser(raw);
+                CreditUser creditUser = new CreditUser(raw);
+                log.info(creditUser.toString());
+                return creditUser;
             } catch (JsonProcessingException e) {
                 log.warn("Failed to process user with external id {}. Reason: {}", raw.getUserNo(), e.getMessage());
                 return null;
@@ -68,7 +70,7 @@ public class CreditUserJobConfig {
                 .sql("INSERT INTO credit_user " +
                         "(abnormal, abnormal_state, age, external_user_id, gender, job, loc_id, wage) " +
                         "VALUES " +
-                        "(:abnormal, :abnormalState, :age, :externalUserId, :gender, :job, :locId, :wage)")
+                        "(:abnormal, :abnormalStateId, :age, :externalUserId, :gender, :job, :locId, :wage)")
                 .beanMapped()
                 .build();
     }
