@@ -36,7 +36,50 @@ public class CreditStoreJobConfig {
         return new JdbcCursorItemReaderBuilder<RawCreditStore>()
                 .name("mysqlCreditStoreReader")
                 .dataSource(dataSource)
-                .sql("SELECT * FROM credit_store")
+                // Ugly af, but this is the fastest way performance-wise.
+                // Jdbc doesnt understend Jpa anotations like @Column, which I need big time
+                .sql("SELECT " +
+                        "id, " +
+                        "industry, " +
+                        "name_ AS `name`, " +
+                        "rank_ AS `rank`, " +
+                        "consumption_range AS consumptionRange, " +
+                        "opening_hours AS openingHours, " +
+                        "S1 AS merchantAcquirerId, " +
+                        "S2 AS merchantSubId, " +
+                        "S3 AS merchantBrandCode, " +
+                        "S4 AS merchantBrandCodeDup, " +
+                        "S5 AS merchantCategoryCode, " +
+                        "S6 AS reservedField1, " +
+                        "S7 AS registrationDate, " +
+                        "S8 AS statusCode, " +
+                        "S9 AS riskFlag1, " +
+                        "S10 AS riskFlag2, " +
+                        "S11 AS riskFlag3, " +
+                        "S12 AS riskFlag4, " +
+                        "S13 AS internalCategoryCode, " +
+                        "S14 AS configurationFlag1, " +
+                        "S15 AS configurationFlag2, " +
+                        "S16 AS configurationFlag3, " +
+                        "S17 AS configurationFlag4, " +
+                        "S18 AS merchantUniqueId, " +
+                        "S19 AS terminalId, " +
+                        "S20 AS acquirerAccountNum, " +
+                        "S21 AS systemReferenceId1, " +
+                        "S22 AS systemReferenceId2, " +
+                        "S23 AS systemReferenceId3, " +
+                        "S24 AS systemReferenceId4, " +
+                        "S25 AS systemReferenceId5, " +
+                        "S26 AS systemReferenceId6, " +
+                        "S27 AS systemReferenceId7, " +
+                        "S28 AS systemReferenceId8, " +
+                        "S29 AS systemReferenceId9, " +
+
+                        "S30 AS activationFlag, " +
+                        "abnormal, " +
+                        "abnormal_state AS abnormalState " +
+
+                        "FROM credit_store")
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditStore.class))
                 .fetchSize(1000)
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditStore.class))
@@ -52,7 +95,7 @@ public class CreditStoreJobConfig {
                 log.info(CreditStore.toString());
                 return CreditStore;
             } catch (JsonProcessingException e) {
-                log.warn("Failed to process user with external id {}. Reason: {}", raw.toString(), e.getMessage());
+                log.warn("Failed to process store with external id {}. Reason: {}", raw.toString(), e.getMessage());
                 return null;
             }
         };
@@ -73,7 +116,9 @@ public class CreditStoreJobConfig {
                         "(:storeExternalId, :industry, :name, :rank, :consumptionRange, :openingHours, " +
                         ":merchantSubId, :merchantBrandCode, :merchantCategoryCode, :registrationDate, " +
                         ":riskFlag1, :riskFlag2, :riskFlag3, :riskFlag4, :internalCategoryCode, " +
-                        ":terminalId, :acquirerAccountNum, :abnormal, :abnormalStateId)")
+                        ":terminalId, :acquirerAccountNum, :abnormal, :abnormalStateId)" +
+                        "ON CONFLICT (store_external_id) DO NOTHING")
+                .assertUpdates(false)
                 .beanMapped()
                 .build();
     }
@@ -95,11 +140,11 @@ public class CreditStoreJobConfig {
     }
 
     @Bean
-    public Job CreditStoreJob(
+    public Job creditStoreJob(
             JobRepository jobRepository,
             Step creditStoreReadProcessWriteStep) {
 
-        return new JobBuilder("CreditStoreJob", jobRepository)
+        return new JobBuilder("creditStoreJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(creditStoreReadProcessWriteStep)
                 .build();

@@ -118,7 +118,7 @@ public class RawCreditStore {
     private String systemReferenceId9;
 
     @Column(name = "S30")
-    private Integer activationFlag;
+    private String activationFlag;
 
     private Integer abnormal;
 

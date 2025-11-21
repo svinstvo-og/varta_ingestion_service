@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawCreditStore;
@@ -18,10 +20,14 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CreditStore {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeInternalId;
+
+    @Column(nullable = false, unique = true)
     private String storeExternalId;
 
     private String industry;
@@ -77,8 +83,11 @@ public class CreditStore {
         this.terminalId = raw.getTerminalId();
         this.acquirerAccountNum = raw.getAcquirerAccountNum();
 
-        log.info("ABNORMALLLL");
         this.abnormal = raw.getAbnormal() == 1;
         this.abnormalState = AbnormalStateConverter.convertAbnormalState(raw.getAbnormalState());
+    }
+
+    public Integer getAbnormalStateId() {
+        return AbnormalStateConverter.getAbnormalStateId(abnormalState);
     }
 }
