@@ -124,4 +124,48 @@ public class RawCreditStore {
 
     @Column(name = "abnormal_state", columnDefinition = "JSONB")
     private String abnormalState;
+
+    @Override
+    public String toString() {
+        return "RawCreditStore{" +
+                "id=" + id +
+                ", industry='" + industry + '\'' +
+                ", name='" + name + '\'' +
+                ", rank='" + rank + '\'' +
+                ", consumptionRange='" + consumptionRange + '\'' +
+                ", openingHours='" + openingHours + '\'' +
+                ", merchantAcquirerId='" + merchantAcquirerId + '\'' +
+                ", merchantSubId='" + merchantSubId + '\'' +
+                ", merchantBrandCode='" + merchantBrandCode + '\'' +
+                ", merchantBrandCodeDup='" + merchantBrandCodeDup + '\'' +
+                ", merchantCategoryCode='" + merchantCategoryCode + '\'' +
+                ", reservedField1='" + reservedField1 + '\'' +
+                ", registrationDate='" + registrationDate + '\'' +
+                ", statusCode='" + statusCode + '\'' +
+                ", riskFlag1=" + riskFlag1 +
+                ", riskFlag2=" + riskFlag2 +
+                ", riskFlag3=" + riskFlag3 +
+                ", riskFlag4=" + riskFlag4 +
+                ", internalCategoryCode='" + internalCategoryCode + '\'' +
+                ", configurationFlag1=" + configurationFlag1 +
+                ", configurationFlag2=" + configurationFlag2 +
+                ", configurationFlag3=" + configurationFlag3 +
+                ", configurationFlag4=" + configurationFlag4 +
+                ", merchantUniqueId='" + merchantUniqueId + '\'' +
+                ", terminalId='" + terminalId + '\'' +
+                ", acquirerAccountNum='" + acquirerAccountNum + '\'' +
+                ", systemReferenceId1='" + systemReferenceId1 + '\'' +
+                ", systemReferenceId2='" + systemReferenceId2 + '\'' +
+                ", systemReferenceId3='" + systemReferenceId3 + '\'' +
+                ", systemReferenceId4='" + systemReferenceId4 + '\'' +
+                ", systemReferenceId5='" + systemReferenceId5 + '\'' +
+                ", systemReferenceId6='" + systemReferenceId6 + '\'' +
+                ", systemReferenceId7='" + systemReferenceId7 + '\'' +
+                ", systemReferenceId8='" + systemReferenceId8 + '\'' +
+                ", systemReferenceId9='" + systemReferenceId9 + '\'' +
+                ", activationFlag=" + activationFlag +
+                ", abnormal=" + abnormal +
+                ", abnormalState='" + abnormalState + '\'' +
+                '}';
+    }
 }

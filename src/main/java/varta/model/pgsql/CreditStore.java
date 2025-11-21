@@ -1,14 +1,23 @@
 package varta.model.pgsql;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import varta.dto.AbnormalState;
+import varta.model.mysql.RawCreditStore;
+import varta.util.AbnormalStateConverter;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "credit_store")
+@Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreditStore {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,4 +65,20 @@ public class CreditStore {
 
     @OneToMany(mappedBy = "merchantAcquirerId")
     private List<CreditTransaction> creditTransactions;
+
+    public CreditStore(RawCreditStore raw) throws JsonProcessingException {
+        this.storeExternalId = raw.getMerchantUniqueId();
+        this.industry = raw.getIndustry();
+        this.name = raw.getName();
+        this.rank = raw.getRank();
+        this.consumptionRange = raw.getConsumptionRange();
+        this.openingHours = raw.getOpeningHours();
+        this.internalCategoryCode = raw.getInternalCategoryCode();
+        this.terminalId = raw.getTerminalId();
+        this.acquirerAccountNum = raw.getAcquirerAccountNum();
+
+        log.info("ABNORMALLLL");
+        this.abnormal = raw.getAbnormal() == 1;
+        this.abnormalState = AbnormalStateConverter.convertAbnormalState(raw.getAbnormalState());
+    }
 }

@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawCreditUser;
+import varta.util.AbnormalStateConverter;
 
 import java.util.*;
 
@@ -20,7 +21,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
-public class CreditUser {
+public class CreditUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long internalUserId;
@@ -64,9 +65,7 @@ public class CreditUser {
 
 
     public Integer getAbnormalStateId() {
-        if (abnormalState == null) return null;
-
-        return abnormalState.ordinal();
+        return AbnormalStateConverter.getAbnormalStateId(abnormalState);
     }
 
     @Override

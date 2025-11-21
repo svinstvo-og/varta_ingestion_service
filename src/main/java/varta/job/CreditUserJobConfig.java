@@ -26,18 +26,16 @@ import varta.model.pgsql.CreditUser;
 
 import javax.sql.DataSource;
 
-// Layer 0
-
-@Configuration
 @EnableBatchProcessing
+@Configuration
 @Slf4j
 public class CreditUserJobConfig {
 
     @Bean
-    public JdbcCursorItemReader<RawCreditUser> mysqlReader(
+    public JdbcCursorItemReader<RawCreditUser> mysqlCreditUserReader(
             @Qualifier("mysqlDataSource" ) DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<RawCreditUser>()
-                .name("mysqlReader")
+                .name("mysqlCreditUserReader")
                 .dataSource(dataSource)
                 .sql("SELECT id, age, gender, job, wage, card, abnormal, abnormal_state, user_no, loc_id FROM credit_user")
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditUser.class))
@@ -62,7 +60,7 @@ public class CreditUserJobConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<CreditUser> pgsqlWriter(
+    public JdbcBatchItemWriter<CreditUser> pgsqlCreditUserWriter(
             @Qualifier("pgsqlDataSource") DataSource dataSource) {
 
         return new JdbcBatchItemWriterBuilder<CreditUser>()
@@ -76,29 +74,29 @@ public class CreditUserJobConfig {
     }
 
     @Bean
-    public Step readProcessWriteStep(
+    public Step creditUserReadProcessWriteStep(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
-            ItemReader<RawCreditUser> mysqlReader,
+            ItemReader<RawCreditUser> mysqlCreditUserReader,
             ItemProcessor<RawCreditUser, CreditUser> creditUserProcessor,
-            ItemWriter<CreditUser> pgsqlWriter) {
+            ItemWriter<CreditUser> pgsqlCreditUserWriter) {
 
-        return new StepBuilder("readProcessWriteStep", jobRepository)
-                .<RawCreditUser, CreditUser>chunk(100, transactionManager)
-                .reader(mysqlReader)
+        return new StepBuilder("creditUserReadProcessWriteStep", jobRepository)
+                .<RawCreditUser, CreditUser>chunk(1000, transactionManager)
+                .reader(mysqlCreditUserReader)
                 .processor(creditUserProcessor)
-                .writer(pgsqlWriter)
+                .writer(pgsqlCreditUserWriter)
                 .build();
     }
 
     @Bean
     public Job creditUserJob(
             JobRepository jobRepository,
-            Step readProcessWriteStep) {
+            Step creditUserReadProcessWriteStep) {
 
         return new JobBuilder("creditUserJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(readProcessWriteStep)
+                .start(creditUserReadProcessWriteStep)
                 .build();
     }
 }
