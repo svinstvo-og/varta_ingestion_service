@@ -25,6 +25,8 @@ public class CreditUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long internalUserId;
+
+    @Column(nullable = false, unique = true)
     private String externalUserId;
 
     private Integer age;

@@ -68,7 +68,9 @@ public class CreditUserJobConfig {
                 .sql("INSERT INTO credit_user " +
                         "(abnormal, abnormal_state, age, external_user_id, gender, job, loc_id, wage) " +
                         "VALUES " +
-                        "(:abnormal, :abnormalStateId, :age, :externalUserId, :gender, :job, :locId, :wage)")
+                        "(:abnormal, :abnormalStateId, :age, :externalUserId, :gender, :job, :locId, :wage)" +
+                        "ON CONFLICT (external_user_id) DO NOTHING")
+                .assertUpdates(false)
                 .beanMapped()
                 .build();
     }
