@@ -1,11 +1,15 @@
 package varta.model.pgsql;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import varta.dto.AbnormalState;
+import varta.model.mysql.RawCreditCard;
+import varta.util.AbnormalStateConverter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "credit_card")
@@ -14,6 +18,7 @@ import java.util.List;
 public class CreditCard {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long internalCardId;
     private String externalCardId;
 
@@ -58,4 +63,22 @@ public class CreditCard {
 
     @OneToMany(mappedBy = "destinationCardId")
     private List<CreditTransaction> creditTransactionsIncoming;
+
+    public CreditCard(RawCreditCard raw) throws JsonProcessingException {
+        this.externalCardId = raw.getCardIdentifier();
+        this.isMerchant = raw.getOwnerType() == "Merchant";
+        this.cardType = raw.getCardType();
+        this.cardProductCode = raw.getCardProductCode();
+        this.cardNickname = raw.getCardNickname();
+        this.cardFeatureFlag = raw.getCardFeatureFlag();
+        this.locationId = raw.getLocationId();
+        this.branchCode = raw.getBranchCode();
+        this.fullLocationCode = raw.getFullLocationCode();
+        this.abnormal = raw.getAbnormal();
+        this.abnormalState = AbnormalStateConverter.convertAbnormalState(raw.getAbnormalState());
+    }
+
+    public Integer getAbnormalStateId() {
+        return AbnormalStateConverter.getAbnormalStateId(abnormalState);
+    }
 }
