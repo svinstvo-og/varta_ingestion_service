@@ -51,4 +51,6 @@ public class RawCreditCard {
 
     @Column(name = "abnormal_state", columnDefinition = "JSONB")
     private String abnormalState;
+
+    private String ownerStableId;
 }

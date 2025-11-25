@@ -2,7 +2,9 @@ package varta.model.pgsql;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawCreditCard;
@@ -15,6 +17,8 @@ import java.util.Objects;
 @Table(name = "credit_card")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreditCard {
 
     @Id
@@ -80,5 +84,9 @@ public class CreditCard {
 
     public Integer getAbnormalStateId() {
         return AbnormalStateConverter.getAbnormalStateId(abnormalState);
+    }
+
+    public Long getCreditUserId() {
+        return (creditUser != null) ? creditUser.getInternalUserId() : null;
     }
 }
