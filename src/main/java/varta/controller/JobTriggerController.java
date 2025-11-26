@@ -28,28 +28,37 @@ public class JobTriggerController {
 
     private final Job creditUserJob;
     private final Job creditStoreJob;
+    private final Job creditCardJob;
 
 
     public JobTriggerController(JobLauncher jobLauncher,
                                 List<String> jobNames,
                                 JobService jobService,
                                 @Qualifier("creditUserJob") Job creditUserJob,
-                                @Qualifier("creditStoreJob") Job creditStoreJob) {
+                                @Qualifier("creditStoreJob") Job creditStoreJob,
+                                @Qualifier("creditCardJob") Job creditCardJob) {
         this.jobLauncher = jobLauncher;
         this.creditUserJob = creditUserJob;
         this.creditStoreJob = creditStoreJob;
+        this.creditCardJob = creditCardJob;
         this.jobService = jobService;
     }
 
-    @PostMapping("start/credit_user")
+    @PostMapping("start/credit-user")
     private void launchCreditUserJob() {
         log.info("Accepted launch credit user job");
         jobService.launchJob(creditUserJob, jobLauncher);
     }
 
-    @PostMapping("start/credit_store")
+    @PostMapping("start/credit-store")
     private void launchCreditStoreJob() {
         log.info("Accepted launch store user job");
         jobService.launchJob(creditStoreJob, jobLauncher);
+    }
+
+    @PostMapping("start/credit-card")
+    private void launchCreditCardJob() {
+        log.info("Accepted launch credit card job");
+        jobService.launchJob(creditCardJob, jobLauncher);
     }
 }

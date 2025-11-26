@@ -53,4 +53,24 @@ public class RawCreditCard {
     private String abnormalState;
 
     private String ownerStableId;
+
+    @Override
+    public String toString() {
+        return "RawCreditCard{" +
+                "cardId=" + cardId +
+                ", ownerType='" + ownerType + '\'' +
+                ", ownerId=" + ownerId +
+                ", cardIdentifier='" + cardIdentifier + '\'' +
+                ", cardType='" + cardType + '\'' +
+                ", cardProductCode='" + cardProductCode + '\'' +
+                ", cardNickname='" + cardNickname + '\'' +
+                ", cardFeatureFlag='" + cardFeatureFlag + '\'' +
+                ", locationId='" + locationId + '\'' +
+                ", branchCode='" + branchCode + '\'' +
+                ", fullLocationCode='" + fullLocationCode + '\'' +
+                ", abnormal=" + abnormal +
+                ", abnormalState='" + abnormalState + '\'' +
+                ", ownerStableId='" + ownerStableId + '\'' +
+                '}';
+    }
 }

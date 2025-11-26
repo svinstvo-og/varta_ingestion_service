@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawCreditCard;
 import varta.util.AbnormalStateConverter;
@@ -19,11 +20,14 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class CreditCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long internalCardId;
+
+    @Column(nullable = false, unique = true)
     private String externalCardId;
 
     // Otherwise is user
@@ -69,6 +73,7 @@ public class CreditCard {
     private List<CreditTransaction> creditTransactionsIncoming;
 
     public CreditCard(RawCreditCard raw) throws JsonProcessingException {
+        log.debug("Creating CreditCard entity from raw credit card - {}", raw.toString());
         this.externalCardId = raw.getCardIdentifier();
         this.isMerchant = raw.getOwnerType() == "Merchant";
         this.cardType = raw.getCardType();

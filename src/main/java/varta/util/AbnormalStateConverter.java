@@ -25,7 +25,7 @@ public class AbnormalStateConverter {
             }
         }
 
-        log.info("AbnormalState: {}", abnormalState);
+//        log.info("AbnormalState: {}", abnormalState);
         return abnormalState;
     }
 

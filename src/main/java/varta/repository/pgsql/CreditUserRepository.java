@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CreditUserRepository extends JpaRepository<CreditUser, Long> {
 
-    public Optional<Long> findInternalUserIdByExternalUserId(String username);
+    public CreditUser findUserByExternalUserId(String externalUserId);
 }

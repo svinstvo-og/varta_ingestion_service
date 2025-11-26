@@ -63,10 +63,15 @@ public class CreditCardJobConfig {
                         "card.C10 AS branchCode, " +
                         "card.C11 AS fullLocationCode, " +
                         "card.abnormal, " +
-                        "card.abnormal_state AS abnormalState " +
-                        " u.user_no AS owner_stable_id " +
-                        "FROM credit_card card " +
-                        "INNER JOIN credit_user u ON card.owner_id = u.id")
+                        "card.abnormal_state AS abnormalState, " + // Added missing comma
+
+                        // The lookup:
+                        "u.user_no AS ownerStableId " +
+
+                        "FROM credit_card card " + // Corrected: Reading from CARD table
+
+                        // We join on the Integer ID, even without a formal FK constraint
+                        "LEFT JOIN credit_user u ON card.owner_id = u.id")
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditCard.class))
                 .fetchSize(1000)
                 .rowMapper(new BeanPropertyRowMapper<>(RawCreditCard.class))
