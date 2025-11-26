@@ -163,4 +163,10 @@ public class RawFinancialTransaction {
 
     @Column(name = "F45")
     private String currencyCodeNumDup3;
+
+    // We will fetch credit_card.card_number here
+    private String joinedCardExternalId;
+
+    // We will fetch credit_store.S18 (MerchantUniqueId) here
+    private String joinedMerchantExternalId;
 }
