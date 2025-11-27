@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class OrchestraApplication {
+public class VartaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OrchestraApplication.class, args);
+		SpringApplication.run(VartaApplication.class, args);
 	}
 
 }

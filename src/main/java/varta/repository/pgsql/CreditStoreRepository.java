@@ -6,4 +6,6 @@ import varta.model.pgsql.CreditStore;
 
 @Repository
 public interface CreditStoreRepository extends JpaRepository<CreditStore, Long> {
+
+    public CreditStore findByStoreExternalId(String externalId);
 }

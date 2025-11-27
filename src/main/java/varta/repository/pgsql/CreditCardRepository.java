@@ -6,4 +6,6 @@ import varta.model.pgsql.CreditCard;
 
 @Repository
 public interface CreditCardRepository extends JpaRepository<CreditCard, Long> {
+
+    public CreditCard findByExternalCardId(String externalCardId);
 }

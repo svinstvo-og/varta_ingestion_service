@@ -63,7 +63,7 @@ public class CreditCard {
     @JoinColumn(name = "credit_user_id")
     private CreditUser creditUser;
 
-    @OneToMany(mappedBy = "transactionInternalId")
+    @OneToMany(mappedBy = "card")
     private List<FinancialTransaction> financialTransactions;
 
     @OneToMany(mappedBy = "sourceCardId")

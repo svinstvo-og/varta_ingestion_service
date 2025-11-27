@@ -81,5 +81,5 @@ public class CreditTransaction {
     @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "destination_card_id")
-    private CreditStore merchantAcquirerId;
+    private CreditStore merchantAcquirer;
 }

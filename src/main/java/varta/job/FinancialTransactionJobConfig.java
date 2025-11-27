@@ -3,7 +3,16 @@ package varta.job;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -12,15 +21,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.transaction.PlatformTransactionManager;
 import varta.model.mysql.RawFinancialTransaction;
 import varta.model.pgsql.FinancialTransaction;
 
 import javax.sql.DataSource;
 
+// Level 2
+
 @Configuration
 @EnableBatchProcessing
 @Slf4j
-public class FinancialTransactionJob {
+public class FinancialTransactionJobConfig {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -84,7 +96,7 @@ public class FinancialTransactionJob {
 
                         // Get the Stable Card ID (Assuming credit_card.C4 matches F2)
                         // We select 'card_number' (or whatever your stable external ID column is in raw card table)
-                        "cc.card_number AS joinedCardExternalId, " +
+                        "cc.C4 AS joinedCardExternalId, " +
 
                         // Get the Stable Merchant ID (Assuming credit_store.S1 matches F17)
                         // We select S18 (MerchantUniqueId)
@@ -110,40 +122,60 @@ public class FinancialTransactionJob {
         return new JdbcBatchItemWriterBuilder<FinancialTransaction>()
                 .dataSource(dataSource)
                 .sql("INSERT INTO financial_transaction (" +
-                        "  transaction_internal_id, " +
-                        "  transaction_category, " +
+                        "  transaction_external_id, " +
                         "  card_pan_reference, " +
                         "  card_entry_mode, " +
                         "  transaction_amount, " +
                         "  currency_code, " +
-                        "  transaction_proccessed_at, " + // Watch for typos in your DB (proccessed vs processed)
-                        "  acquirer_country_code, " +
+                        "  transaction_processed_at, " +
                         "  response_code, " +
                         "  fee_amount, " +
-                        // Foreign Keys
-                        "  card_id, " +
-                        "  merchant_id" +
+                        "  card_internal_card_id, " +
+                        "  merchant_store_internal_id" +
                         ") VALUES (" +
-                        "  :transactionInternalId, " +
-                        "  :transactionCategory, " +
-                        "  :CardPanReference, " + // Matches Getter getCardPanReference()
-                        "  :CardEntryMode, " +
+                        "  :transactionExternalId, " +
+                        "  :cardPanReference, " +
+                        "  :cardEntryMode, " +
                         "  :transactionAmount, " +
                         "  :currencyCode, " +
-                        "  :transactionProccessedAt, " +
-                        "  :acquirerCountryCode, " +
+                        "  :transactionProcessedAt, " +
                         "  :responseCode, " +
                         "  :feeAmount, " +
                         // The Helper Getters
-                        "  :cardInternalId, " +      // Calls getCardInternalId()
-                        "  :merchantInternalId" +    // Calls getMerchantInternalId()
+                        "  :cardInternalId, " +      // Looks for getCardInternalId()
+                        "  :merchantInternalId" +    // Looks for getMerchantInternalId()
                         ") " +
                         // Idempotency check
-                        "ON CONFLICT (transaction_internal_id) DO NOTHING")
+                        "ON CONFLICT (transaction_external_id) DO NOTHING")
                 .beanMapped()
                 .assertUpdates(false)
                 .build();
     }
 
+    @Bean
+    public Step FinancialTransactionReadProcessWriteStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager transactionManager,
+            ItemReader<RawFinancialTransaction> mysqlFinancialTransactionReader,
+            ItemProcessor<RawFinancialTransaction, FinancialTransaction> FinancialTransactionProcessor,
+            ItemWriter<FinancialTransaction> pgsqlFinancialTransactionWriter) {
 
+        return new StepBuilder("financialTransactionReadProcessWriteStep", jobRepository)
+                .<RawFinancialTransaction, FinancialTransaction>chunk(1000, transactionManager)
+                .reader(mysqlFinancialTransactionReader)
+                .processor(FinancialTransactionProcessor)
+                .writer(pgsqlFinancialTransactionWriter)
+                .build();
+    }
+
+    @Bean
+    public Job financialTransactionJob(
+            JobRepository jobRepository,
+            Step FinancialTransactionReadProcessWriteStep) {
+
+        return new JobBuilder("financialTransactionJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
+                .start(FinancialTransactionReadProcessWriteStep)
+                .build();
+    }
 }

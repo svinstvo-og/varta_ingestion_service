@@ -66,10 +66,10 @@ public class CreditStore {
     @Nullable
     private AbnormalState abnormalState;
 
-    @OneToMany(mappedBy = "merchantAcquirerId")
+    @OneToMany(mappedBy = "merchant")
     private List<FinancialTransaction> financialTransactions;
 
-    @OneToMany(mappedBy = "merchantAcquirerId")
+    @OneToMany(mappedBy = "merchantAcquirer")
     private List<CreditTransaction> creditTransactions;
 
     public CreditStore(RawCreditStore raw) throws JsonProcessingException {

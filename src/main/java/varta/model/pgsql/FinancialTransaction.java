@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import varta.model.mysql.RawFinancialTransaction;
 
 import java.math.BigDecimal;
@@ -18,15 +19,17 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Table(name = "financial_transaction")
 public class FinancialTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionExternalId;
-    private String transactionInternalId;
+    private Long transactionInternalId;
+    @Column(nullable = false, unique = true)
+    private String transactionExternalId;
 
 //    private Integer transactionCategory;
-    private int cardPanReference;
+    private long cardPanReference;
     private int cardEntryMode;
 
     private BigDecimal transactionAmount;
@@ -39,26 +42,38 @@ public class FinancialTransaction {
 
     private BigDecimal feeAmount;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CreditCard card;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private CreditCard cardId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CreditStore merchantAcquirerId;
+    private CreditStore merchant;
 
     public FinancialTransaction(RawFinancialTransaction raw) {
-        this.transactionInternalId = raw.getTransactionUniqueId();
-        this.cardPanReference = Integer.parseInt(raw.getCardPanReference());
+        this.transactionExternalId = raw.getTransactionUniqueId();
+        this.cardPanReference = Long.parseLong(raw.getCardPanReference());
         this.cardEntryMode = Integer.parseInt(raw.getTerminalEntryMode());
         this.transactionAmount = raw.getTransactionAmount();
         this.currencyCode = Integer.parseInt(raw.getCurrencyCodeNum());
 
-        // Datetime conversion
-        this.transactionProcessedAt = LocalDateTime.of(
-                LocalDate.parse(raw.getSettlementDate(), DateTimeFormatter.BASIC_ISO_DATE),
-                LocalTime.parse(raw.getTransactionTimestampLocal().substring(3), DateTimeFormatter.ISO_LOCAL_TIME));
+        DateTimeFormatter DATE_FMT = DateTimeFormatter.BASIC_ISO_DATE; // YYYYMMDD
+        DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HHmmss"); // No colons
 
+        LocalDate datePart = LocalDate.parse(raw.getSettlementDate(), DATE_FMT);
+        String timeString = raw.getTransactionTimestampLocal().substring(4);
+
+        this.transactionProcessedAt = LocalDateTime.of(
+                datePart,
+                LocalTime.parse(timeString, TIME_FMT)
+        );
         this.responseCode = Integer.parseInt(raw.getResponseCode());
         this.feeAmount = raw.getFeeOrMarkupAmount();
+    }
+
+    public Long getCardInternalId() {
+        return (card != null) ? card.getInternalCardId() : null;
+    }
+
+    public Long getMerchantInternalId() {
+        return (merchant != null) ? merchant.getStoreInternalId() : null;
     }
 }
