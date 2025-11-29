@@ -4,10 +4,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "credit_trans")
 public class RawTransaction {
 
@@ -135,4 +141,13 @@ public class RawTransaction {
 
     @Column(name = "abnormal_state", columnDefinition = "JSONB")
     private String abnormalState;
+
+    // Derived from Joining T1 -> CreditCard.C4 -> getting CardNumber
+    private String joinedSourceCardExternalId;
+
+    // Derived from Joining T37 -> CreditCard.C4 -> getting CardNumber
+    private String joinedDestCardExternalId;
+
+    // Derived from Joining T25 -> CreditStore.S1 -> getting S18 (UniqueId)
+    private String joinedMerchantExternalId;
 }
