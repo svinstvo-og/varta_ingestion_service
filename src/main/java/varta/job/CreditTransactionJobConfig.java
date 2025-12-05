@@ -28,10 +28,10 @@ import javax.sql.DataSource;
 @Configuration
 @EnableBatchProcessing
 @Slf4j
-public class CreditTransactionConfig {
+public class CreditTransactionJobConfig {
 
     @Bean
-    public JdbcCursorItemReader<RawTransaction> creditTransactionReader(DataSource dataSource) {
+    public JdbcCursorItemReader<RawTransaction> creditTransactionReader(@Qualifier("mysqlDataSource") DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<RawTransaction>()
                 .name("mysqlCreditTransactionReader")
                 .dataSource(dataSource)
@@ -83,10 +83,10 @@ public class CreditTransactionConfig {
                         // --- 2. THE FLATTENED JOINS ---
 
                         // Get Stable Source Card ID (Link T1 -> C4)
-                        "src_cc.card_number AS joinedSourceCardExternalId, " +
+                        "src_cc.C4 AS joinedSourceCardExternalId, " +
 
                         // Get Stable Destination Card ID (Link T37 -> C4)
-                        "dst_cc.card_number AS joinedDestCardExternalId, " +
+                        "dst_cc.C4 AS joinedDestCardExternalId, " +
 
                         // Get Stable Merchant ID (Link T25 (Acquirer) -> S1)
                         "store.S18 AS joinedMerchantExternalId " +
@@ -111,7 +111,7 @@ public class CreditTransactionConfig {
 
         return new JdbcBatchItemWriterBuilder<CreditTransaction>()
                 .dataSource(dataSource)
-                .sql("INSERT INTO credit_trans (" + // Assuming table name is credit_trans or financial_transaction?
+                .sql("INSERT INTO credit_trans (" +
                         "  transaction_pan_reference, " +
                         "  is_transfer, " +
                         "  transaction_code, " +
@@ -168,7 +168,7 @@ public class CreditTransactionConfig {
             ItemProcessor<RawTransaction, CreditTransaction> CreditTransactionProcessor,
             ItemWriter<CreditTransaction> pgsqlCreditTransactionWriter) {
 
-        return new StepBuilder("CreditTransactionReadProcessWriteStep", jobRepository)
+        return new StepBuilder("creditTransactionReadProcessWriteStep", jobRepository)
                 .<RawTransaction, CreditTransaction>chunk(1000, transactionManager)
                 .reader(mysqlCreditTransactionReader)
                 .processor(CreditTransactionProcessor)
@@ -176,12 +176,13 @@ public class CreditTransactionConfig {
                 .build();
     }
 
-    @Bean
-    public Job CreditTransactionJob(
+    @Bean(name = "creditTransactionJob")
+    public Job creditTransactionJob(
             JobRepository jobRepository,
             Step CreditTransactionReadProcessWriteStep) {
 
-        return new JobBuilder("CreditTransactionJob", jobRepository)
+        log.info("creditTransactionJob BEAN IS CREATED");
+        return new JobBuilder("creditTransactionJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(CreditTransactionReadProcessWriteStep)
                 .build();

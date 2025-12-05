@@ -2,6 +2,7 @@ spring:
   application:
     name: "varta-ingestion-svc"
 
+
   datasource:
     pgsql:
       url: "jdbc:postgresql://localhost:5432/ingestion-service-db"
@@ -39,3 +40,5 @@ spring:
       initialize-schema: always
     job:
       enabled: false
+  jpa:
+    show-sql: true

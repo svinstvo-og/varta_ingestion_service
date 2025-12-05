@@ -55,7 +55,8 @@ public class CreditCard {
     // A concatenation of C9 and C10.
     private String fullLocationCode;
 
-    private Integer abnormal;
+    // TODO CHANGE TO BOOLEAN ONCE ETL IS COMPLETE
+    private int abnormal;
 
     private AbnormalState abnormalState;
 
@@ -66,16 +67,16 @@ public class CreditCard {
     @OneToMany(mappedBy = "card")
     private List<FinancialTransaction> financialTransactions;
 
-    @OneToMany(mappedBy = "sourceCardId")
+    @OneToMany(mappedBy = "sourceCard")
     private List<CreditTransaction> creditTransactionsOutgoing;
 
-    @OneToMany(mappedBy = "destinationCardId")
+    @OneToMany(mappedBy = "destinationCard")
     private List<CreditTransaction> creditTransactionsIncoming;
 
     public CreditCard(RawCreditCard raw) throws JsonProcessingException {
         log.debug("Creating CreditCard entity from raw credit card - {}", raw.toString());
         this.externalCardId = raw.getCardIdentifier();
-        this.isMerchant = raw.getOwnerType() == "Merchant";
+        this.isMerchant = Objects.equals(raw.getOwnerType(), "Merchant");
         this.cardType = raw.getCardType();
         this.cardProductCode = raw.getCardProductCode();
         this.cardNickname = raw.getCardNickname();
@@ -83,6 +84,7 @@ public class CreditCard {
         this.locationId = raw.getLocationId();
         this.branchCode = raw.getBranchCode();
         this.fullLocationCode = raw.getFullLocationCode();
+        // todo == 1;
         this.abnormal = raw.getAbnormal();
         this.abnormalState = AbnormalStateConverter.convertAbnormalState(raw.getAbnormalState());
     }

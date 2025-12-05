@@ -6,12 +6,10 @@ import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
-import varta.model.mysql.RawCreditCard;
 import varta.model.mysql.RawTransaction;
 import varta.model.pgsql.CreditCard;
 import varta.model.pgsql.CreditStore;
 import varta.model.pgsql.CreditTransaction;
-import varta.model.pgsql.CreditUser;
 import varta.repository.pgsql.CreditCardRepository;
 import varta.repository.pgsql.CreditStoreRepository;
 
@@ -74,7 +72,7 @@ public class CreditTransactionProcessor implements ItemProcessor<RawTransaction,
         CreditTransaction transaction = new CreditTransaction(raw);
 
         transaction.setSourceCard(cardCache.get(raw.getJoinedSourceCardExternalId()));
-        transaction.setDestinationCardId(cardCache.get(raw.getJoinedSourceCardExternalId()));
+        transaction.setDestinationCard(cardCache.get(raw.getJoinedSourceCardExternalId()));
         log.info("For transaction {} source and destination card was set", transaction.getSystemTraceId());
 
         if (raw.getJoinedMerchantExternalId() != null) {
@@ -82,6 +80,7 @@ public class CreditTransactionProcessor implements ItemProcessor<RawTransaction,
             log.info("For transaction {} merchant acquirer was set", transaction.getSystemTraceId());
         }
 
+        log.info("Transaction: {} \n Raw transaction: {} ", transaction.toString(), raw.toString());
         return transaction;
     }
 

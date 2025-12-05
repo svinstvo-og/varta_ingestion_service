@@ -3,16 +3,12 @@ package varta.model.pgsql;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawTransaction;
 import varta.util.AbnormalStateConverter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -22,6 +18,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class CreditTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +27,7 @@ public class CreditTransaction {
 
     // Code for the transaction channel. 01 for purchases, 03 for transfers.
     // !isTransfer = purchase
-    private boolean isTransfer;
+    private Boolean isTransfer;
 
     // IDK
     private long transactionCode;
@@ -41,7 +38,7 @@ public class CreditTransaction {
     private BigDecimal transactionAmount;
 
     // TODO: find out tf this is
-    private BigInteger transactionCompositeKey;
+    private String transactionCompositeKey;
 
     private LocalDateTime processedAt;
 
@@ -67,15 +64,16 @@ public class CreditTransaction {
     private AbnormalState abnormalState;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_card_id")
     private CreditCard sourceCard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "destination_card_id")
-    private CreditCard destinationCardId;
+    @JoinColumn(name = "destination_card_id")
+    private CreditCard destinationCard;
 
     @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "destination_card_id")
+    @JoinColumn(name = "merchant_acquirer_id")
     private CreditStore merchantAcquirer;
 
     public Long getSourceCardInternalId() {
@@ -83,7 +81,7 @@ public class CreditTransaction {
     }
 
     public Long getDestinationCardInternalId() {
-        return (destinationCardId != null) ? destinationCardId.getInternalCardId() : null;
+        return (destinationCard != null) ? destinationCard.getInternalCardId() : null;
     }
 
     public Long getMerchantAcquirerInternalId() {
@@ -97,13 +95,12 @@ public class CreditTransaction {
 
     public CreditTransaction(RawTransaction raw) throws JsonProcessingException {
         this.transactionPanReference = raw.getTransactionPanReference();
-        this.isTransfer = Objects.equals(raw.getTransactionCode(), "03");
+        this.isTransfer = Objects.equals(raw.getTransactionChannelCode(), "03");
         this.transactionCode = Long.parseLong(raw.getTransactionCode());
         this.systemTraceId = Integer.parseInt(raw.getSystemTraceId());
 
         this.transactionAmount = raw.getTransactionAmount();
-        this.transactionCompositeKey = BigInteger.valueOf(Long.parseLong(raw.getTransactionCompositeKey()));
-        //PROC
+        this.transactionCompositeKey = raw.getTransactionCompositeKey();
 
         this.responseCode = Integer.parseInt(raw.getResponseCode());
         this.entryMode = Integer.parseInt(raw.getEntryMode());

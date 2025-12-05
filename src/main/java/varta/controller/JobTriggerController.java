@@ -22,7 +22,8 @@ public class JobTriggerController {
     private final Job creditUserJob;
     private final Job creditStoreJob;
     private final Job creditCardJob;
-    private final Job financialTransactionsJob;
+    private final Job financialTransactionJob;
+    private final Job creditTransacitonJob;
 
 
     public JobTriggerController(JobLauncher jobLauncher,
@@ -31,12 +32,14 @@ public class JobTriggerController {
                                 @Qualifier("creditUserJob") Job creditUserJob,
                                 @Qualifier("creditStoreJob") Job creditStoreJob,
                                 @Qualifier("creditCardJob") Job creditCardJob,
-                                @Qualifier("financialTransactionJob") Job financialTransactionJob) {
+                                @Qualifier("financialTransactionJob") Job financialTransactionJob,
+                                @Qualifier("creditTransactionJob") Job creditTransacitonJob) {
         this.jobLauncher = jobLauncher;
         this.creditUserJob = creditUserJob;
         this.creditStoreJob = creditStoreJob;
         this.creditCardJob = creditCardJob;
-        this.financialTransactionsJob = financialTransactionJob;
+        this.financialTransactionJob = financialTransactionJob;
+        this.creditTransacitonJob = creditTransacitonJob;
 
         this.jobService = jobService;
     }
@@ -60,8 +63,14 @@ public class JobTriggerController {
     }
 
     @PostMapping("start/financial-transaction")
-    private void launchFinancialTransactionsJob() {
+    private void launchFinancialTransactionJob() {
         log.info("Accepted launch financial transaction job");
-        jobService.launchJob(financialTransactionsJob, jobLauncher);
+        jobService.launchJob(financialTransactionJob, jobLauncher);
+    }
+
+    @PostMapping("start/credit-transaction")
+    private void launchCreditTransactionJob() {
+        log.info("Launching credit transaction job");
+        jobService.launchJob(creditTransacitonJob, jobLauncher);
     }
 }
