@@ -69,7 +69,6 @@ public class CreditTransaction {
     @ManyToOne(fetch = FetchType.LAZY)
     private CreditCard sourceCard;
 
-    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "destination_card_id")
     private CreditCard destinationCardId;

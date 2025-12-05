@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableBatchProcessing
 @Slf4j
-public class CreditTransactionController {
+public class CreditTransactionConfig {
 
     @Bean
     public JdbcCursorItemReader<RawTransaction> creditTransactionReader(DataSource dataSource) {
