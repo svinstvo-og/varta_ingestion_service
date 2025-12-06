@@ -10,25 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IngestionController {
 
-    @Autowired
-    private
-
-    final
-    NormalizationService normalizationService;
+    private final NormalizationService normalizationService;
 
     public IngestionController(NormalizationService normalizationService) {
         this.normalizationService = normalizationService;
     }
 
-    @GetMapping("/test/financial_transaction/{id}")
-    public void fetchRawTransaction(@PathVariable Long id) {
-        log.info("Accepted 'Get raw transaction by {} id' request", id);
-        normalizationService.testRawTransactionRead(id);
-    }
-
-    @PostMapping("test/credit-user")
-    public void createCreditUser() {
-        log.info("Accepted 'Create credit user' request");
-
+    @PostMapping("launch")
+    private void normalizeAllTables() {
+        normalizationService.normalizeAllTables();
     }
 }
