@@ -110,12 +110,12 @@ public class CreditStoreJobConfig {
                 .sql("INSERT INTO credit_store " +
                         "(store_external_id, industry, name, rank, consumption_range, opening_hours, " +
                         "merchant_sub_id, merchant_brand_code, merchant_category_code, registration_date, " +
-                        "risk_flag1, risk_flag2, risk_flag3, risk_flag4, internal_category_code, " +
+                        "internal_category_code, " +
                         "terminal_id, acquirer_account_num, abnormal, abnormal_state) " +
                         "VALUES " +
                         "(:storeExternalId, :industry, :name, :rank, :consumptionRange, :openingHours, " +
                         ":merchantSubId, :merchantBrandCode, :merchantCategoryCode, :registrationDate, " +
-                        ":riskFlag1, :riskFlag2, :riskFlag3, :riskFlag4, :internalCategoryCode, " +
+                        ":internalCategoryCode, " +
                         ":terminalId, :acquirerAccountNum, :abnormal, :abnormalStateId)" +
                         "ON CONFLICT (store_external_id) DO NOTHING")
                 .assertUpdates(false)

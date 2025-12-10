@@ -112,10 +112,8 @@ public class CreditTransaction {
         this.terminalTypeCode = Integer.parseInt(raw.getTerminalTypeCode());
         this.terminalId = Integer.parseInt(raw.getTerminalIdShort());
 
-        DateTimeFormatter DATE_FMT = DateTimeFormatter.BASIC_ISO_DATE; // YYYYMMDD
-        DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HHmmss"); // No colons
-
-        this.processedAt = TimeConverter.convertTimestamp(raw.getTransactionTimestampLocal());
+        this.processedAt = TimeConverter.convertTimestamp(raw.getTransactionDate(),
+                raw.getTransactionTimestampLocal());
 
         this.authenticationFlag = raw.getAuthenticationFlag();
         this.abnormal = raw.getAbnormal() == 1;

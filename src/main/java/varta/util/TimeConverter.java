@@ -13,9 +13,9 @@ public class TimeConverter {
     private final static DateTimeFormatter DATE_FMT = DateTimeFormatter.BASIC_ISO_DATE; // YYYYMMDD
     private final static DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HHmmss"); // No colons
 
-    public static LocalDateTime convertTimestamp(String rawTimestamp) {
-        LocalDate datePart = LocalDate.parse(rawTimestamp, DATE_FMT);
-        String timeString = rawTimestamp.substring(4);
+    public static LocalDateTime convertTimestamp(String rawDate, String rawTime) {
+        LocalDate datePart = LocalDate.parse(rawDate, DATE_FMT);
+        String timeString = rawTime.substring(4);
 
         return  LocalDateTime.of(
                 datePart,

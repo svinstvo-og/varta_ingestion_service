@@ -56,7 +56,8 @@ public class FinancialTransaction {
         this.transactionAmount = raw.getTransactionAmount();
         this.currencyCode = Integer.parseInt(raw.getCurrencyCodeNum());
 
-        this.transactionProcessedAt = TimeConverter.convertTimestamp(raw.getSettlementDate());
+        this.transactionProcessedAt = TimeConverter.convertTimestamp(raw.getSettlementDate(),
+                raw.getTransactionTimestampLocal());
 
         this.responseCode = Integer.parseInt(raw.getResponseCode());
         this.feeAmount = raw.getFeeOrMarkupAmount();
