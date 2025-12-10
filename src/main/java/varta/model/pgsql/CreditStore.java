@@ -47,12 +47,6 @@ public class CreditStore {
     private Integer merchantCategoryCode;
     private LocalDate registrationDate;
 
-    // No idea what that is rly
-    private Integer riskFlag1;
-    private Integer riskFlag2;
-    private Integer riskFlag3;
-    private Integer riskFlag4;
-
     private String internalCategoryCode;
 
     // An identifier for the merchant's terminal or POS system.

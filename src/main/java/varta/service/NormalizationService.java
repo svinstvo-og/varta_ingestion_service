@@ -46,6 +46,8 @@ public class NormalizationService {
         this.jobService = jobService;
     }
 
+
+
     public RawFinancialTransaction testRawTransactionRead(Long id) {
         log.info("testRawTransactionRead");
         Optional<RawFinancialTransaction> financialTransaction = rawFinancialTransactionRepository.findById(Long.valueOf(id));

@@ -7,9 +7,13 @@ import lombok.*;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawTransaction;
 import varta.util.AbnormalStateConverter;
+import varta.util.TimeConverter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Entity
@@ -107,6 +111,11 @@ public class CreditTransaction {
         this.transactionDescription = raw.getTransactionDescription();
         this.terminalTypeCode = Integer.parseInt(raw.getTerminalTypeCode());
         this.terminalId = Integer.parseInt(raw.getTerminalIdShort());
+
+        DateTimeFormatter DATE_FMT = DateTimeFormatter.BASIC_ISO_DATE; // YYYYMMDD
+        DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HHmmss"); // No colons
+
+        this.processedAt = TimeConverter.convertTimestamp(raw.getTransactionTimestampLocal());
 
         this.authenticationFlag = raw.getAuthenticationFlag();
         this.abnormal = raw.getAbnormal() == 1;

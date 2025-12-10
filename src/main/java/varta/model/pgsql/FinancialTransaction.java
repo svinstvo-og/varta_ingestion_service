@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import varta.model.mysql.RawFinancialTransaction;
+import varta.util.TimeConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -55,16 +56,8 @@ public class FinancialTransaction {
         this.transactionAmount = raw.getTransactionAmount();
         this.currencyCode = Integer.parseInt(raw.getCurrencyCodeNum());
 
-        DateTimeFormatter DATE_FMT = DateTimeFormatter.BASIC_ISO_DATE; // YYYYMMDD
-        DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HHmmss"); // No colons
+        this.transactionProcessedAt = TimeConverter.convertTimestamp(raw.getSettlementDate());
 
-        LocalDate datePart = LocalDate.parse(raw.getSettlementDate(), DATE_FMT);
-        String timeString = raw.getTransactionTimestampLocal().substring(4);
-
-        this.transactionProcessedAt = LocalDateTime.of(
-                datePart,
-                LocalTime.parse(timeString, TIME_FMT)
-        );
         this.responseCode = Integer.parseInt(raw.getResponseCode());
         this.feeAmount = raw.getFeeOrMarkupAmount();
     }
