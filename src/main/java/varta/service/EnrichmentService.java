@@ -29,7 +29,26 @@ public class EnrichmentService {
         List<CreditTransaction> transactionsLast24H = latestTransactions.get(TimePeriod.LAST_DAY);
         List<CreditTransaction> transactionsLast1H = latestTransactions.get(TimePeriod.LAST_HOUR);
 
+        enrichedTransaction.setVelocity1H(transactionsLast1H.size());
+        enrichedTransaction.setVelocity24H(transactionsLast24H.size());
+
+        enrichedTransaction.setDistinctMerchants1H(countUniqueMerchants(transactionsLast1H));
+        
+
         return enrichedTransaction;
+    }
+
+    private int countUniqueMerchants(List<CreditTransaction> transactions) {
+        int counter = 0;
+        Set<Long> seenIds = new HashSet<>();
+
+        for (CreditTransaction transaction : transactions) {
+            if (!seenIds.contains(transaction.getTransactionInternalId())) {
+                seenIds.add(transaction.getTransactionInternalId());
+                counter++;
+            }
+        }
+        return counter;
     }
 
     private Map<TimePeriod, List<CreditTransaction>> getLatestTransactions(CreditTransaction transaction) {

@@ -12,7 +12,7 @@ public class EnrichedTransactionDto {
     //velocity features
     private int velocity1H;
     private int velocity24H;
-    private Integer distinctMerchants1H;
+    private int distinctMerchants1H;
     private Double failRatio1H;
 
     //monetary deviation features
