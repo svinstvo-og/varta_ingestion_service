@@ -22,12 +22,19 @@ spring:
           hibernate:
             dialect: org.hibernate.dialect.PostgreSQLDialect
 
+
     # Mysql datasource
     mysql:
       url: "jdbc:mysql://localhost:3307/sf_web_001"
       username: root
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
+
+#  data:
+#    # Redis
+#    redis:
+#      host: localhost
+#      port: 6379
 
   sql:
     init:
