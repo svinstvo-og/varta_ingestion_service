@@ -1,17 +1,21 @@
 package varta.dto;
 
+import lombok.*;
+
 import java.math.BigDecimal;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EnrichedTransactionDto {
     //velocity features
-
     private int velocity1H;
     private int velocity24H;
     private Integer distinctMerchants1H;
     private Double failRatio1H;
 
     //monetary deviation features
-
     private Double avgSpend30D;
     private Double zScore;
     private Double ratioToMedian;
