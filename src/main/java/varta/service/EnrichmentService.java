@@ -34,7 +34,7 @@ public class EnrichmentService {
 
         enrichedTransaction.setDistinctMerchants1H(countUniqueMerchants(transactionsLast1H));
 
-        setMonetaryFeatures(enrichedTransaction, transactionsLast30D);
+        setMonetaryFeatures(enrichedTransaction, transactionsLast30D, transaction.getTransactionAmount().doubleValue());
 
         return enrichedTransaction;
     }
@@ -79,13 +79,12 @@ public class EnrichmentService {
         return latestTransactions;
     }
 
-    private void setMonetaryFeatures(EnrichedTransactionDto enrichedTransaction, List<CreditTransaction> transactions) {
+    private void setMonetaryFeatures(EnrichedTransactionDto enrichedTransaction, List<CreditTransaction> transactions, double enrichedTransactionAmount) {
         double totalSpent = 0;
         double max = 0;
         double tempAmount;
         double median;
         double mean;
-        double enrichedTransactionAmount = enrichedTransaction.getAmount();
         ArrayList<Double> amounts = new ArrayList<>();
 
         for (CreditTransaction transaction : transactions) {

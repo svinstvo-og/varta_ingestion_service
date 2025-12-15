@@ -1,6 +1,7 @@
 package varta.dto;
 
 import lombok.*;
+import varta.model.pgsql.CreditTransaction;
 
 import java.math.BigDecimal;
 
@@ -23,8 +24,4 @@ public class EnrichedTransactionDto {
     // contextual temporal features
     private Long secondsSinceLastTransaction;
     private Boolean isNight;
-
-    // transaction features
-    private double amount;
-
 }
