@@ -33,7 +33,8 @@ public class EnrichmentService {
         enrichedTransaction.setVelocity24H(transactionsLast24H.size());
 
         enrichedTransaction.setDistinctMerchants1H(countUniqueMerchants(transactionsLast1H));
-        
+
+        setMonetaryFeatures(enrichedTransaction, transactionsLast30D);
 
         return enrichedTransaction;
     }
@@ -71,11 +72,57 @@ public class EnrichmentService {
                 transactionsLast24H.add(ct);
             }
         }
-
         latestTransactions.put(TimePeriod.LAST_HOUR, transactionsLast1H);
         latestTransactions.put(TimePeriod.LAST_DAY, transactionsLast24H);
         latestTransactions.put(TimePeriod.LAST_30DAYS, transactionsLast30D);
 
         return latestTransactions;
+    }
+
+    private void setMonetaryFeatures(EnrichedTransactionDto enrichedTransaction, List<CreditTransaction> transactions) {
+        double totalSpent = 0;
+        double max = 0;
+        double tempAmount;
+        double median;
+        double mean;
+        double enrichedTransactionAmount = enrichedTransaction.getAmount();
+        ArrayList<Double> amounts = new ArrayList<>();
+
+        for (CreditTransaction transaction : transactions) {
+            // mean
+            tempAmount = transaction.getTransactionAmount().doubleValue();
+            totalSpent += tempAmount;
+
+            // median
+            amounts.add(tempAmount);
+
+            // max val
+            if (tempAmount > max) max = tempAmount;
+        }
+
+        // median calculations
+        amounts.sort(null);
+        median = amounts.size() % 2 == 0 ? (amounts.get(amounts.size()/2) + amounts.get((amounts.size()/2) + 1)) / 2 : amounts.get(amounts.size()/2);
+
+        mean = totalSpent / amounts.size();
+
+        enrichedTransaction.setZScore((enrichedTransactionAmount - mean) / calculateStandardDeviation(amounts, mean));
+        enrichedTransaction.setRatioToMedian(enrichedTransactionAmount / median);
+        enrichedTransaction.setMaxSingleJump(enrichedTransactionAmount / max);
+        enrichedTransaction.setAvgSpend30D(mean);
+    }
+
+    private double calculateStandardDeviation(List<Double> amounts, double mean) {
+        double varianceSum = 0.0;
+        double standardDeviation;
+
+        for (Double amount : amounts) {
+            double diff = amount - mean;
+            varianceSum += diff * diff;
+        }
+
+        standardDeviation = Math.sqrt(varianceSum / (amounts.size() - 1));
+
+        return standardDeviation;
     }
 }
