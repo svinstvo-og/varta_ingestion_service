@@ -30,11 +30,19 @@ spring:
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
 
-#  data:
-#    # Redis
-#    redis:
-#      host: localhost
-#      port: 6379
+  data:
+    # Redis
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    topic:
+      fat-transactions: fat-transactions
+    producer:
+      bootstrap-servers: localhost:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   sql:
     init:

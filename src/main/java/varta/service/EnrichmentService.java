@@ -13,7 +13,6 @@ import java.util.*;
 @Service
 public class EnrichmentService {
 
-//    private RedisTemplate<>
     private final CreditTransactionRepository creditTransactionRepository;
 
     public EnrichmentService(CreditTransactionRepository creditTransactionRepository) {

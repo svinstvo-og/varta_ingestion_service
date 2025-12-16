@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import varta.model.mysql.RawFinancialTransaction;
 import varta.repository.mysql.RawFinancialTransactionRepository;
+import varta.service.messaging.FatTransactionPublisher;
+import varta.dto.FatTransactionDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,8 @@ public class NormalizationService {
     private final Job financialTransactionJob;
     private final Job creditTransacitonJob;
 
+    private final FatTransactionPublisher fatTransactionPublisher;
+
     public NormalizationService(RawFinancialTransactionRepository rawFinancialTransactionRepository,
                                 JobLauncher jobLauncher,
                                 JobService jobService,
@@ -34,7 +38,8 @@ public class NormalizationService {
                                 @Qualifier("creditStoreJob") Job creditStoreJob,
                                 @Qualifier("creditCardJob") Job creditCardJob,
                                 @Qualifier("financialTransactionJob") Job financialTransactionJob,
-                                @Qualifier("creditTransactionJob") Job creditTransacitonJob) {
+                                @Qualifier("creditTransactionJob") Job creditTransacitonJob,
+                                FatTransactionPublisher fatTransactionPublisher) {
         this.rawFinancialTransactionRepository = rawFinancialTransactionRepository;
         this.jobLauncher = jobLauncher;
         this.creditUserJob = creditUserJob;
@@ -42,6 +47,7 @@ public class NormalizationService {
         this.creditCardJob = creditCardJob;
         this.financialTransactionJob = financialTransactionJob;
         this.creditTransacitonJob = creditTransacitonJob;
+        this.fatTransactionPublisher = fatTransactionPublisher;
 
         this.jobService = jobService;
     }
@@ -93,5 +99,9 @@ public class NormalizationService {
 
     public void launchCreditTransactionJob() {
         jobService.launchJob(creditTransacitonJob, jobLauncher);
+    }
+
+    public void publishFatTransaction(FatTransactionDto payload) {
+        fatTransactionPublisher.publish(payload);
     }
 }
