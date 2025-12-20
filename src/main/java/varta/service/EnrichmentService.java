@@ -1,5 +1,6 @@
 package varta.service;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import varta.dto.EnrichedTransactionDto;
 import varta.dto.TimePeriod;

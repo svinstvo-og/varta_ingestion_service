@@ -5,7 +5,7 @@ spring:
 
   datasource:
     pgsql:
-      url: "jdbc:postgresql://localhost:5432/ingestion-service-db"
+      url: "jdbc:postgresql://localhost:5433/ingestion-service-db"
       username: "postgres"
       password: "zxca"
       driver-class-name: "org.postgresql.Driver"
