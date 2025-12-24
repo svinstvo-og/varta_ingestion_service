@@ -2,10 +2,7 @@ package varta.model.pgsql;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import varta.dto.AbnormalState;
 import varta.model.mysql.RawCreditCard;
@@ -21,6 +18,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@Builder
 public class CreditCard {
 
     @Id

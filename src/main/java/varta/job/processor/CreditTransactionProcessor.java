@@ -25,7 +25,8 @@ public class CreditTransactionProcessor implements ItemProcessor<RawTransaction,
     private LoadingCache<String, CreditCard> cardCache;
     private LoadingCache<String, CreditStore> merchantCache;
 
-    public CreditTransactionProcessor(EntityManager entityManager, CreditCardRepository creditCardRepository, CreditStoreRepository creditStoreRepository) {
+    public CreditTransactionProcessor(EntityManager entityManager, CreditCardRepository creditCardRepository,
+                                      CreditStoreRepository creditStoreRepository) {
         this.entityManager = entityManager;
         this.creditCardRepository = creditCardRepository;
         this.creditStoreRepository = creditStoreRepository;

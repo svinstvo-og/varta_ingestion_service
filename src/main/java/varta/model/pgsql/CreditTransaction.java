@@ -23,6 +23,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class CreditTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -20,4 +20,6 @@ public class IngestionController {
     private void normalizeAllTables() {
         normalizationService.normalizeAllTables();
     }
+
+
 }

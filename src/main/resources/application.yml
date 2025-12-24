@@ -6,8 +6,8 @@ spring:
   datasource:
     pgsql:
       url: "jdbc:postgresql://localhost:5433/ingestion-service-db"
-      username: "postgres"
-      password: "zxca"
+      username: postgres
+      password: zxca
       driver-class-name: "org.postgresql.Driver"
 
       hikari:
@@ -17,7 +17,7 @@ spring:
       jpa:
         show-sql: true
         hibernate:
-          ddl-auto: update
+          ddl-auto: create
         properties:
           hibernate:
             dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -40,19 +40,19 @@ spring:
     topic:
       fat-transactions: fat-transactions
     producer:
-      bootstrap-servers: localhost:29092
+      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   sql:
     init:
+      # IMPORTANT!!! set this to always after dropping pgsql db, then set back to never, otherwise it will try
+      # to initiate tables in mysql, which is read only, so that will throw an error which im rly to lazy to fix :3
       mode: never
       schema-locations: classpath:org/springframework/batch/core/schema-postgresql.sql
       platform: pgsql
 
   batch:
-    jdbc:
-      initialize-schema: always
     job:
       enabled: false
   jpa:
