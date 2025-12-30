@@ -11,6 +11,9 @@ import varta.repository.pgsql.CreditCardRepository;
 import varta.repository.pgsql.CreditTransactionRepository;
 import varta.repository.pgsql.CreditUserRepository;
 
+import java.util.List;
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class MockService {
@@ -31,14 +34,19 @@ public class MockService {
     @Transactional
     public void createMockTransaction() {
         var user = new CreditUser();
+        user.setExternalUserId(UUID.randomUUID().toString());
+        user.setLocId("MOCK");
         creditUserRepository.save(user);
         log.info("Saved mock user");
 
         var card = getMockCreditCard(user);
+        card.setExternalCardId(UUID.randomUUID().toString());
+        card.setCardNickname("MOCK");
         creditCardRepository.save(card);
         log.info("Saved mock card");
 
         var transaction = getMockCreditTransaction(card);
+        transaction.setTransactionDescription("MOCK");
         creditTransactionRepository.save(transaction);
     }
 
@@ -49,4 +57,19 @@ public class MockService {
     private CreditCard getMockCreditCard(CreditUser user) {
         return  new CreditCard().builder().creditUser(user).build();
     }
+
+    public void deleteMockTransactions() {
+        List<CreditTransaction> mockTransactions = creditTransactionRepository.findByTransactionDescription("MOCK");
+        log.info("Deleting {} mock transactions", mockTransactions.size());
+        for (CreditTransaction t : mockTransactions) {
+            creditTransactionRepository.delete(t);
+        }
+
+    }
+
+    private void deleteMockUser() {
+//        List<CreditUser> mockUsers = creditUserRepository.
+    }
+
+    private void deleteMockCard() {}
 }

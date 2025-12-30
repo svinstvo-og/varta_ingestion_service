@@ -3,6 +3,7 @@ package varta.repository.pgsql;
 import org.hibernate.annotations.processing.SQL;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import varta.model.pgsql.CreditTransaction;
 
@@ -18,7 +19,7 @@ public interface CreditTransactionRepository extends JpaRepository<CreditTransac
             "processed_at >= NOW() - CAST(:minutes || ' minutes' AS INTERVAL)", nativeQuery = true)
     public List<CreditTransaction> getCreditTransactionByInterval(int minutes);
 
-    Optional<CreditTransaction> findTopBySourceCardInternalCardIdAndProcessedAtLessThanOrderByProcessedAtDesc(Long sourceCardId,
-                                                                                                             LocalDateTime processedAt);
-
+    @Query(value = "SELECT * FROM credit_trans WHERE " +
+            "credit_trans.transaction_description = :description", nativeQuery = true)
+    public List<CreditTransaction> findByTransactionDescription(@Param("description") String description);
 }
