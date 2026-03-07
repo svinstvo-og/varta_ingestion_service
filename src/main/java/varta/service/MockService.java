@@ -11,12 +11,16 @@ import varta.repository.pgsql.CreditCardRepository;
 import varta.repository.pgsql.CreditTransactionRepository;
 import varta.repository.pgsql.CreditUserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class MockService {
+
+    final Random random = new Random();
 
     final
     CreditTransactionRepository creditTransactionRepository;
@@ -50,6 +54,16 @@ public class MockService {
         creditTransactionRepository.save(transaction);
     }
 
+    // For testing detc service. Not efficient, but convenient for testing
+    public CreditTransaction repeatRandomTransaction() {
+        List<CreditTransaction> transactions = creditTransactionRepository.findAll();
+        CreditTransaction randomTransaction = transactions.get(random.nextInt(transactions.size()));
+        CreditTransaction duplicate = new CreditTransaction();
+        duplicate.copy(randomTransaction);
+        creditTransactionRepository.save(duplicate);
+        return duplicate;
+    }
+
     private CreditTransaction getMockCreditTransaction(CreditCard card) {
         return new CreditTransaction().builder().sourceCard(card).destinationCard(card).build();
     }
@@ -72,4 +86,12 @@ public class MockService {
     }
 
     private void deleteMockCard() {}
+
+//    private CreditTransaction generateRandomTransaction() {
+//        return new CreditTransaction().builder()
+//                .processedAt(LocalDateTime.now())
+//                .abnormal(false)
+//                .transactionAmount()
+//                .build();
+//    }
 }

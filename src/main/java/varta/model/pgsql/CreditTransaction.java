@@ -120,4 +120,25 @@ public class CreditTransaction {
         this.abnormal = raw.getAbnormal() == 1;
         this.abnormalState = AbnormalStateConverter.convertAbnormalState(raw.getAbnormalState());
     }
+
+    public void copy(CreditTransaction other) {
+        this.transactionPanReference = other.transactionPanReference;
+        this.isTransfer = other.isTransfer;
+        this.transactionCode = other.transactionCode;
+        this.systemTraceId = other.systemTraceId;
+        this.transactionAmount = other.transactionAmount;
+        this.transactionCompositeKey = other.transactionCompositeKey;
+        this.processedAt = other.processedAt;
+        this.responseCode = other.responseCode;
+        this.entryMode = other.entryMode;
+        this.transactionDescription = other.transactionDescription;
+        this.terminalTypeCode = other.terminalTypeCode;
+        this.terminalId = other.terminalId;
+        this.authenticationFlag = other.authenticationFlag;
+        this.abnormal = other.abnormal;
+        this.abnormalState = other.abnormalState;
+        this.sourceCard = other.sourceCard;
+        this.destinationCard = other.destinationCard;
+        this.merchantAcquirer = other.merchantAcquirer;
+    }
 }
