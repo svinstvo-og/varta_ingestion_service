@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: "varta-ingestion-svc"
+
+
+  datasource:
+    pgsql:
+      url: "jdbc:postgresql://localhost:5433/ingestion-service-db"
+      username: postgres
+      password: zxca
+      driver-class-name: "org.postgresql.Driver"
+
+      hikari:
+        pool-name: "pgsql-hikari-pool"
+        maximum-pool-size: 20
+
+      jpa:
+        show-sql: true
+        hibernate:
+          ddl-auto: create
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+    # Mysql datasource
+    mysql:
+      url: "jdbc:mysql://localhost:3307/sf_web_001"
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    # Redis
+    redis:
+      host: localhost
+      port: 6379
+
+  kafka:
+    topic:
+      fat-transactions: fat-transactions
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  sql:
+    init:
+      # IMPORTANT!!! set this to always after dropping pgsql db, then set back to never, otherwise it will try
+      # to initiate tables in mysql, which is read only, so that will throw an error which im rly to lazy to fix :3
+      mode: never
+      schema-locations: classpath:org/springframework/batch/core/schema-postgresql.sql
+      platform: pgsql
+
+  batch:
+    job:
+      enabled: false
+  jpa:
+    show-sql: true

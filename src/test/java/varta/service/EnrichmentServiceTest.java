@@ -234,7 +234,7 @@ class EnrichmentServiceTest {
             LocalDateTime baseTime = LocalDateTime.of(2024, 1, 1, 12, 0);
             CreditTransaction currentTransaction = transaction(999L, 125.0, baseTime);
 
-            // Sorted: 80, 100, 110, 120 -> Median = (110 + 120) / 2 = 115
+            // Sorted: 80, 100, 110, 120 -> Median = (100 + 110) / 2 = 105
             when(creditTransactionRepository.getCreditTransactionByInterval(Converter.daysToMinutes(30)))
                     .thenReturn(List.of(
                             transaction(1L, 100.0, baseTime.minusDays(1)),
@@ -245,8 +245,7 @@ class EnrichmentServiceTest {
 
             EnrichedTransactionDto enriched = enrichmentService.enrichCreditTransaction(currentTransaction);
 
-            // Note: Current implementation uses size/2 and size/2+1 which gives (110+120)/2=115
-            assertThat(enriched.getRatioToMedian()).isCloseTo(125.0 / 115.0, within(1e-9));
+            assertThat(enriched.getRatioToMedian()).isCloseTo(125.0 / 105.0, within(1e-9));
         }
 
         @Test
@@ -289,6 +288,45 @@ class EnrichmentServiceTest {
     @Nested
     @DisplayName("Edge Cases Tests")
     class EdgeCasesTests {
+
+        @Test
+        @DisplayName("should handle empty history gracefully")
+        void enrichCreditTransaction_handlesEmptyHistory() {
+            LocalDateTime baseTime = LocalDateTime.of(2024, 1, 1, 12, 0);
+            CreditTransaction currentTransaction = transaction(999L, 100.0, baseTime);
+
+            when(creditTransactionRepository.getCreditTransactionByInterval(Converter.daysToMinutes(30)))
+                    .thenReturn(List.of());
+
+            EnrichedTransactionDto enriched = enrichmentService.enrichCreditTransaction(currentTransaction);
+
+            assertThat(enriched.getVelocity1H()).isZero();
+            assertThat(enriched.getVelocity24H()).isZero();
+            assertThat(enriched.getDistinctMerchants1H()).isZero();
+            assertThat(enriched.getAvgSpend30D()).isZero();
+            assertThat(enriched.getZScore()).isZero();
+            assertThat(enriched.getRatioToMedian()).isZero();
+            assertThat(enriched.getMaxSingleJump()).isZero();
+        }
+
+        @Test
+        @DisplayName("should handle zero variance (identical amounts) gracefully")
+        void enrichCreditTransaction_handlesZeroVariance() {
+            LocalDateTime baseTime = LocalDateTime.of(2024, 1, 1, 12, 0);
+            CreditTransaction currentTransaction = transaction(999L, 100.0, baseTime);
+
+            when(creditTransactionRepository.getCreditTransactionByInterval(Converter.daysToMinutes(30)))
+                    .thenReturn(List.of(
+                            transaction(1L, 50.0, baseTime.minusDays(1)),
+                            transaction(2L, 50.0, baseTime.minusDays(2))
+                    ));
+
+            EnrichedTransactionDto enriched = enrichmentService.enrichCreditTransaction(currentTransaction);
+
+            // Mean is 50. StdDev is 0.
+            assertThat(enriched.getAvgSpend30D()).isEqualTo(50.0);
+            assertThat(enriched.getZScore()).isZero(); // Protected against division by zero
+        }
 
         @Test
         @DisplayName("should handle transaction at exact boundary of 1 hour")

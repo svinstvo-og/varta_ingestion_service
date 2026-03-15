@@ -80,6 +80,14 @@ public class EnrichmentService {
     }
 
     private void setMonetaryFeatures(EnrichedTransactionDto enrichedTransaction, List<CreditTransaction> transactions, double enrichedTransactionAmount) {
+        if (transactions.isEmpty()) {
+            enrichedTransaction.setZScore(0.0);
+            enrichedTransaction.setRatioToMedian(0.0);
+            enrichedTransaction.setMaxSingleJump(0.0);
+            enrichedTransaction.setAvgSpend30D(0.0);
+            return;
+        }
+
         double totalSpent = 0;
         double max = 0;
         double tempAmount;
@@ -101,17 +109,41 @@ public class EnrichmentService {
 
         // median calculations
         amounts.sort(null);
-        median = amounts.size() % 2 == 0 ? (amounts.get(amounts.size()/2) + amounts.get((amounts.size()/2) + 1)) / 2 : amounts.get(amounts.size()/2);
+        if (amounts.size() % 2 == 0) {
+            median = (amounts.get(amounts.size() / 2 - 1) + amounts.get(amounts.size() / 2)) / 2;
+        } else {
+            median = amounts.get(amounts.size() / 2);
+        }
 
         mean = totalSpent / amounts.size();
 
-        enrichedTransaction.setZScore((enrichedTransactionAmount - mean) / calculateStandardDeviation(amounts, mean));
-        enrichedTransaction.setRatioToMedian(enrichedTransactionAmount / median);
-        enrichedTransaction.setMaxSingleJump(enrichedTransactionAmount / max);
+        double standardDeviation = calculateStandardDeviation(amounts, mean);
+        if (standardDeviation == 0) {
+            enrichedTransaction.setZScore(0.0);
+        } else {
+            enrichedTransaction.setZScore((enrichedTransactionAmount - mean) / standardDeviation);
+        }
+
+        if (median == 0) {
+            enrichedTransaction.setRatioToMedian(0.0);
+        } else {
+            enrichedTransaction.setRatioToMedian(enrichedTransactionAmount / median);
+        }
+
+        if (max == 0) {
+             enrichedTransaction.setMaxSingleJump(0.0);
+        } else {
+            enrichedTransaction.setMaxSingleJump(enrichedTransactionAmount / max);
+        }
+
         enrichedTransaction.setAvgSpend30D(mean);
     }
 
     private double calculateStandardDeviation(List<Double> amounts, double mean) {
+        if (amounts.size() <= 1) {
+            return 0.0;
+        }
+
         double varianceSum = 0.0;
         double standardDeviation;
 
