@@ -4,6 +4,7 @@ spring:
 
 
   datasource:
+    # PostgreSql datasource
     pgsql:
       url: "jdbc:postgresql://localhost:5433/ingestion-service-db"
       username: postgres
